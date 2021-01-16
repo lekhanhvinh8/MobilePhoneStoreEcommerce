@@ -1,0 +1,13 @@
+ae theo quy tắc này nhé:
+
+1. Khi tạo controller mới: 
+	+ xem ví dụ mẫu ở controller HomeController
+	+ thay vì sử dụng _context, hãy sử dụng _unitOfWork
+
+2. Project chuyển sang sử dụng mẫu repository nên không sử dụng _context mà sử dụng _unitOfWork để truy cập database
+
+3. Cách sử dụng mẫu repository và mẫu UnitOfWork
+	+ Các hàm cơ bản như: GetAll(), Get(id), Add(entity),... đã có sẵn, lấy ra sử dụng: VD: _unitOfWork.Categories.GetAll(); == _context.Categories.ToList();
+	+ Cần viết một hàm cho riêng 1 entity thì vào Core.Repositories chọn một interface, thêm hàm đó vào, vào tiếp Persistence.Repositories chọn class tương ứng với interface trước đó, implement hàm đó.
+ 
+ 
