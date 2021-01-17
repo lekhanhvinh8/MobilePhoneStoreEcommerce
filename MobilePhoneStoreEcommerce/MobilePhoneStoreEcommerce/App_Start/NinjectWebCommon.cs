@@ -12,6 +12,10 @@ namespace MobilePhoneStoreEcommerce.App_Start
     using Ninject.Web.Common;
     using Ninject.Extensions.Conventions;
     using Ninject.Web.Common.WebHost;
+    using MobilePhoneStoreEcommerce.Core;
+    using MobilePhoneStoreEcommerce.Persistence;
+    using System.Web.Http;
+    using Ninject.Web.WebApi;
 
     public static class NinjectWebCommon 
     {
@@ -57,6 +61,9 @@ namespace MobilePhoneStoreEcommerce.App_Start
                         .SelectAllClasses()
                         .BindDefaultInterface();
                 });
+
+                //For Web api 2
+                GlobalConfiguration.Configuration.DependencyResolver = new NinjectDependencyResolver(kernel);
 
                 return kernel;
             }

@@ -163,11 +163,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="api\AvatarOfProductController.cs" />
+    <Compile Include="api\CategoriesController.cs" />
+    <Compile Include="api\OrdersController.cs" />
+    <Compile Include="api\ProducersController.cs" />
+    <Compile Include="api\ProductForSellerController.cs" />
+    <Compile Include="api\SpecificationsController.cs" />
+    <Compile Include="api\SpecificationValuesController.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\NinjectWebCommon.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Core\Domain\Account.cs" />
     <Compile Include="Core\Domain\AvatarOfProduct.cs" />
@@ -184,6 +192,16 @@
     <Compile Include="Core\Domain\Role.cs" />
     <Compile Include="Core\Domain\SpecificationValue.cs" />
     <Compile Include="Core\Domain\StarRating.cs" />
+    <Compile Include="Core\Dtos\AccountDto.cs" />
+    <Compile Include="Core\Dtos\CategoryDto.cs" />
+    <Compile Include="Core\Dtos\OrderDto.cs" />
+    <Compile Include="Core\Dtos\ProducerDto.cs" />
+    <Compile Include="Core\Dtos\ProductDto.cs" />
+    <Compile Include="Core\Dtos\ProductForSellerDto.cs" />
+    <Compile Include="Core\Dtos\ProductsOfOrderDto.cs" />
+    <Compile Include="Core\Dtos\ProductSpecificationDto.cs" />
+    <Compile Include="Core\Dtos\RegisterDto.cs" />
+    <Compile Include="Core\Dtos\SpecificationValueDto.cs" />
     <Compile Include="Core\IUnitOfWork.cs" />
     <Compile Include="Core\Repositories\IAccountRepository.cs" />
     <Compile Include="Core\Repositories\IAvatarOfProductRepository.cs" />
@@ -201,6 +219,7 @@
     <Compile Include="Core\Repositories\IRoleRepository.cs" />
     <Compile Include="Core\Repositories\ISpecificationValueRepository.cs" />
     <Compile Include="Core\Repositories\IStarRatingRepository.cs" />
+    <Compile Include="Core\ViewModels\LoginViewModel.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -211,6 +230,11 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ViewModels\AllRoles.cs" />
     <Compile Include="Persistence\ApplicationDbContext.cs" />
+    <Compile Include="Persistence\Consts\OrderStates.cs" />
+    <Compile Include="Persistence\Consts\RoleIds.cs" />
+    <Compile Include="Persistence\Consts\SessionNames.cs" />
+    <Compile Include="Persistence\CustomValidations\ValidRoleLogin.cs" />
+    <Compile Include="Persistence\CustomValidations\ValidUserNameRegister.cs" />
     <Compile Include="Persistence\EntitiyConfigurations\AccountConfiguration.cs" />
     <Compile Include="Persistence\EntitiyConfigurations\AvatarOfProductConfiguration.cs" />
     <Compile Include="Persistence\EntitiyConfigurations\CartConfiguration.cs" />
@@ -246,6 +270,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\Account.css" />
+    <Content Include="Content\Admin.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
@@ -407,6 +433,9 @@
     <Content Include="Content\DataTables\images\sort_desc.png" />
     <Content Include="Content\DataTables\images\sort_desc_disabled.png" />
     <Content Include="Content\DataTables\swf\flashExport.swf" />
+    <Content Include="Content\resources\images\adminIcon.png" />
+    <Content Include="Content\select2.min.css" />
+    <Content Include="Content\Seller.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -500,11 +529,13 @@
     <Content Include="Scripts\jquery-3.4.1.slim.js" />
     <Content Include="Scripts\jquery-3.4.1.slim.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery-ui.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\select2.min.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -515,6 +546,7 @@
     <Content Include="Views\Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Admin\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
