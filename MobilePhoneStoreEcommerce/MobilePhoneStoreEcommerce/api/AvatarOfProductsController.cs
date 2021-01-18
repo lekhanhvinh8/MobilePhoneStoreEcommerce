@@ -17,7 +17,7 @@ namespace MobilePhoneStoreEcommerce.api
         }
 
         [HttpGet]
-        public HttpResponseMessage GetAvatarOfProduct(int productID)
+        public HttpResponseMessage Get(int productID)
         {
             var avatarOfProduct = this._unitOfWork.AvatarOfProducts.Get(productID);
 

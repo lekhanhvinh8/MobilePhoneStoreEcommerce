@@ -41,7 +41,10 @@ namespace MobilePhoneStoreEcommerce.Persistence.Repositories
         {
             return this._entities.ToList();
         }
-
+        public void Load(Expression<Func<TEntity, bool>> predicate)
+        {
+            this._entities.Where(predicate).Load();
+        }
         public void Remove(TEntity entity)
         {
             this._entities.Remove(entity);

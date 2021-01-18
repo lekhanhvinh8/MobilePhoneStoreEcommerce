@@ -17,5 +17,6 @@ namespace MobilePhoneStoreEcommerce.Core.Repositories
         void AddRange(IEnumerable<TEntity> entities);
         void Remove(TEntity entity);
         void RemoveRange(IEnumerable<TEntity> entities);
+        void Load(Expression<Func<TEntity, bool>> predicate);
     }
 }

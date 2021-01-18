@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Web.Http;
-using System.Data.Entity;
 using System.Data.Entity.Core.Objects;
 using System.Web;
 using System.IO;
 using Newtonsoft.Json;
 using MobilePhoneStoreEcommerce.Core;
 using MobilePhoneStoreEcommerce.Core.Dtos;
-using MobilePhoneStoreEcommerce.Core.Services;
 
 namespace MobilePhoneStoreEcommerce.api
 {
@@ -28,6 +25,10 @@ namespace MobilePhoneStoreEcommerce.api
 
             foreach (var product in this._unitOfWork.Products.GetAll())
             {
+                //Load related objects
+                this._unitOfWork.Categories.Load(c => c.ID == product.CategoryID);
+                this._unitOfWork.Producers.Load(p => p.ID == product.ProducerID);
+
                 productForSellersDto.Add(new ProductForSellerDto(product));
             }
 
@@ -73,7 +74,8 @@ namespace MobilePhoneStoreEcommerce.api
             productForSellerDto.Price = int.Parse(form["price"].ToString());
             productForSellerDto.Quantity = int.Parse(form["quantity"].ToString());
             productForSellerDto.Status = Boolean.Parse(form["status"]);
-            productForSellerDto.SpecificationValuesDtos = JsonConvert.DeserializeObject<List<SpecificationValueDto>>(form.Get("specificationValuesDto"));
+            productForSellerDto.SellerID = int.Parse(form["sellerID"]);
+            productForSellerDto.SpecificationValuesDtos = JsonConvert.DeserializeObject<List<SpecificationValueDto>>(form.Get("specificationValuesDtos"));
 
             //Get image file
             var httpPostedFile = HttpContext.Current.Request.Files["imageFile"];
@@ -85,8 +87,10 @@ namespace MobilePhoneStoreEcommerce.api
 
             var product = this._unitOfWork.Products.SingleOrDefault(p => p.Name == productForSellerDto.Name);
 
-            if (product == null)
-                throw new Exception("Not found");
+            //Load related objects
+            this._unitOfWork.Categories.Load(c => c.ID == product.CategoryID);
+            this._unitOfWork.Producers.Load(p => p.ID == product.ProducerID);
+            
 
             return new ProductForSellerDto(product);
         }
@@ -117,23 +121,11 @@ namespace MobilePhoneStoreEcommerce.api
 
             var productInDb = this._unitOfWork.Products.SingleOrDefault(p => p.ID == product.ID);
 
+            //Load related objects
+            this._unitOfWork.Categories.Load(c => c.ID == productInDb.CategoryID);
+            this._unitOfWork.Producers.Load(p => p.ID == productInDb.ProducerID);
 
             return new ProductForSellerDto(productInDb);
-        }
-
-        public ProductForSellerDto DeleteFullInfo(int productID)
-        {
-            var product = this._unitOfWork.Products.SingleOrDefault(p => p.ID == productID);
-
-
-            var isSuccess = new ObjectParameter("isSuccess", typeof(bool));
-
-            //this._unitOfWork.DeleteProduct(productID, isSuccess);
-
-            if (!(bool)isSuccess.Value)
-                throw new Exception("Failure deleting product"); // product ID is not found in 2 tables Products and AvatarOfProduct
-
-            return new ProductForSellerDto(product);
         }
 
         [System.Web.Http.HttpDelete]
@@ -141,14 +133,14 @@ namespace MobilePhoneStoreEcommerce.api
         {
             var product = this._unitOfWork.Products.SingleOrDefault(p => p.ID == productID);
 
-
-            var productDto = new ProductForSellerDto(product);
-
             if (product == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
 
+            var productDto = new ProductForSellerDto(product);
+
             product.SpecificationValues.Clear();
 
+            this._unitOfWork.AvatarOfProducts.Remove(product.AvatarOfProduct);
             this._unitOfWork.Products.Remove(product); // after deletion, this product no longer has category and producer
             this._unitOfWork.Complete();
 

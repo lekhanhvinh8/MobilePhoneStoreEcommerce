@@ -27,6 +27,7 @@ namespace MobilePhoneStoreEcommerce.Core.Dtos
             this.ProducerName = product.Producer.Name;
             this.Quantity = product.Quantity;
             this.Status = product.Status;
+            this.SellerID = product.SellerID;
             this.SpecificationValuesDtos = new List<SpecificationValueDto>();
 
             foreach (var specificationValue in product.SpecificationValues)
@@ -60,6 +61,8 @@ namespace MobilePhoneStoreEcommerce.Core.Dtos
         public string CategoryName { get; set; }
         public virtual ICollection<SpecificationValueDto> SpecificationValuesDtos { get; set; }
 
+        [Required]
+        public int SellerID { get; set; }
         public Product CreateModel()
         {
             Product product = new Product();
@@ -71,6 +74,7 @@ namespace MobilePhoneStoreEcommerce.Core.Dtos
             product.ProducerID = this.ProducerID;
             product.Quantity = this.Quantity;
             product.Status = this.Status;
+            product.SellerID = this.SellerID;
 
             return product;
         }

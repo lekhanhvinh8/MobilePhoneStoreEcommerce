@@ -1,0 +1,314 @@
+﻿@{ 
+    Layout = null;
+}
+@using MobilePhoneStoreEcommerce.Persistence.Consts
+@model MobilePhoneStoreEcommerce.Core.ViewModels.ProductForSellerViewModel
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="~/Content/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="~/Content/DataTables/css/dataTables.bootstrap.min.css"/>
+    <link rel="stylesheet" href="~/Content/Seller.css" type="text/css" />
+
+</head>
+
+<body>
+    <header>
+        <div class="navbar navbar-default">
+            <div class="container">
+                <div class="navbar-header">
+                    @Html.ActionLink("Home", "Index", "HomeScreen", new { area = "" }, new { @class = "navbar-brand" })
+                    @Html.ActionLink("Seller", "Index", "Seller", new { sellerID = Model.SellerID }, new { @class = "navbar-brand" })
+                </div>
+                <div class="navbar-collapse collapse">
+                    <div class="nav navbar-nav navbar-right">
+                        <img src="~/Content/resources/images/adminIcon.png" style="height: 50px;" />
+                        <ul class="nav navbar-nav navbar-right">
+                            <li>@Html.ActionLink("Log out", "Logout", "Account", routeValues: new { sessionName = SessionNames.SellerID }, htmlAttributes: new { id = "logoutLink" })</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="container">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link" id="product-management-tab" data-toggle="tab" href="#product-management-area" role="tab" >Product Management</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="order-management-tab" data-toggle="tab" href="#order-management-area" role="tab">Order Management</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane" id="product-management-area" role="tabpanel">
+                <br />
+                <a href="/Seller/AddNewProduct?sellerID=@Model.SellerID" class="btn btn-danger">
+                    <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+                    Add New Product
+                </a>
+                <br />
+                <br />
+
+                <div>
+                    <table id="table-products" class="table table-bordered">
+                        <thead>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="tab-pane" id="order-management-area" role="tabpanel">
+                <br />
+                <div>
+                    <table id="table-orders" class="table table-bordered">
+                        <thead>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+    <script src="~/Scripts/bootstrap.js"></script>
+    <script src="~/Scripts/bootbox.js"></script>
+    <script src="~/Scripts/DataTables/jquery.dataTables.js"></script>
+    <script src="~/Scripts/DataTables/dataTables.bootstrap.js"></script>
+
+    <script>
+        $(document).ready(function () {
+
+            $('#myTab a[href="#product-management-area"]').tab('show')
+
+            var tableProducts = $("#table-products").DataTable({
+                ajax: {
+                    url: "/api/ProductForSellers/GetAll",
+                    dataSrc: "",
+                },
+                "sScrollY": "355",
+                "bScrollCollapse": true,
+                columns: [
+                    {
+                        title: "Name",
+                        data: "name",
+                        width: "20%",
+                        render: function (data) {
+                            return data;
+                        },
+
+                    },
+                    {
+                        title: "Image",
+                        data: "productID",
+                        width: "11%",
+                        render: function (data) {
+                            var markup = "<img id='avatar-preview' class='img-thumbnail' style='width: 100px; height: 100px; object-fit: cover' src='/api/AvatarOfProducts/Get?productID=" + data + "'/>";
+
+                            return markup;
+                        },
+                    },
+                    {
+                        title: "Mode",
+                        data: "status",
+                        width: "5%",
+                        render: function (data, type, product) {
+
+                            var isChecked = "checked";
+
+                            if (product.status == false)
+                                isChecked = "";
+
+                            var markup =
+                                "<label class='switch'>"
+                                + "<input type='checkbox' class='success check-status' " + isChecked + " data-product-id=" + product.productID + ">"
+                                + "<span class='slider round'></span>"
+                                + "</label>";
+
+                            return markup;
+                        },
+                    },
+                    {
+                        title: "Producer",
+                        data: "producerName",
+                        width: "5%",
+                        render: function (data) {
+                            return data;
+                        },
+                    },
+                    {
+                        title: "Category",
+                        data: "categoryName",
+                        width: "5%",
+                        render: function (data) {
+                            return data;
+                        },
+                    },
+                    {
+                        title: "Quantity",
+                        data: "quantity",
+                        width: "7%",
+                        render: function (data) {
+                            return data;
+                        },
+                    },
+                    {
+                        title: "Price",
+                        width: "7%",
+                        data: "price",
+                        render: function (data) {
+                            return data;
+                        },
+                    },
+                    {
+                        title: "Modify",
+                        data: "productID",
+                        render: function (data) {
+                            var markup = "<button class='btn btn-primary js-modify' data-product-id=" + data + ">"
+                                + "<span class='glyphicon glyphicon-eye-open' aria-hidden='true'></span>"
+                                + "Modify</button>";
+                            return markup;
+                        },
+                    },
+                ],
+
+            });
+
+            var tableOrders = $("#table-orders").DataTable({
+                ajax: {
+                    url: "/api/Orders/GetListByStatus?status=" + @OrderStates.Pending,
+                    dataSrc: "",
+                },
+                "sScrollY": "355",
+                "bScrollCollapse": true,
+                columns: [
+                    {
+                        title: "Order's ID",
+                        data: "orderID",
+                        render: function (data) {
+                            return data;
+                        },
+                    },
+                    {
+                        title: "Customer's ID",
+                        data: "customerID",
+                        render: function (data) {
+                            return data;
+                        }
+                    },
+                    {
+                        title: "Order's Time",
+                        data: "orderTime",
+                        render: function (data) {
+                            return data;
+                        },
+                    },
+                    {
+                        title: "Total Cost",
+                        data: "totalOrderCost",
+                        render: function (data) {
+                            return "<span>" + data + " VND</span>";
+                        },
+                    },
+                    {
+                        title: "Confirm",
+                        data: "orderID",
+                        render: function (data) {
+                            return "<button class='btn btn-success jsConfirm' data-orderID=" +  data + ">Confirm</button>";
+                        }
+                    },
+                    {
+                        title: "Cancel",
+                        data: "orderID",
+                        render: function (data) {
+                            return "<button class='btn btn-danger jsCancel' data-orderID=" + data + ">Cancel</button>";
+                        }
+                    }
+                ],
+
+            });
+
+            $("#myTab a[href='#order-management-area']").on('click', function (e) {
+                tableOrders.ajax.reload();
+            })
+            $("#myTab a[href='#product-management-area']").on('click', function (e) {
+                tableProducts.ajax.reload();
+            })
+
+
+            $("#table-products").on("click", ".check-status", function () {
+                var checkbox = $(this);
+
+                var status = false;
+
+                if (checkbox.is(':checked')) {
+                    status = true;
+                }
+
+                $.ajax({
+                    url: "/api/ProductForSellers/ModifyStatus?productID=" + checkbox.attr("data-product-id") + "&status=" + status,
+                    method: "Get",
+                });
+
+            });
+
+            $("#table-products").on("click", ".js-modify", function () {
+                window.location.href = '/Seller/UpdateProduct?productID=' + $(this).attr("data-product-id") + '&sellerID=' + @Model.SellerID;
+            });
+
+            $("#table-orders").on("click", ".jsConfirm", function () {
+                var buttonConfirm = $(this);
+
+                $.ajax({
+                    url: "/api/Orders/Get?orderID=" + buttonConfirm.attr("data-orderid"),
+                    method: "Get",
+                    success: function (response) {
+                        if (response.status != @OrderStates.Pending) {
+                            bootbox.alert("This order has been canceled");
+                            tableOrders.row(buttonConfirm.parents("tr")).remove().draw();
+                        }
+                        else {
+                            $.ajax({
+                                url: "/api/Orders/ConfirmOrder?orderID=" + buttonConfirm.attr("data-orderid"),
+                                method: "Get",
+                                success: function () {
+                                    tableOrders.row(buttonConfirm.parents("tr")).remove().draw();
+                                },
+                            });
+                        }
+                    }
+                })
+
+            });
+
+            $("#table-orders").on("click", ".jsCancel", function () {
+                var buttonConfirm = $(this);
+
+                $.ajax({
+                    url: "/api/Orders/Get?orderID=" + buttonConfirm.attr("data-orderid"),
+                    method: "Get",
+                    success: function (response) {
+                        if (response.status != @OrderStates.Pending) {
+                            bootbox.alert("This order has been canceled");
+                            tableOrders.row(buttonConfirm.parents("tr")).remove().draw();
+                        }
+                        else {
+                            $.ajax({
+                                url: "/api/Orders/CancelOrder?orderID=" + buttonConfirm.attr("data-orderid"),
+                                method: "Get",
+                                success: function () {
+                                    tableOrders.row(buttonConfirm.parents("tr")).remove().draw();
+                                },
+                            });
+                        }
+                    }
+                })
+
+            });
+        });
+
+    </script>
+</body>
+</html>
