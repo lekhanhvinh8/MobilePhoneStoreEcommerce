@@ -9,5 +9,6 @@ namespace MobilePhoneStoreEcommerce.Core.Domain
 
         public virtual Role Role { get; set; }
         public virtual Customer Customer { get; set; }
+        public virtual Seller Seller { get; set; }
     }
 }

@@ -13,7 +13,7 @@ namespace MobilePhoneStoreEcommerce.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "202101160224441_InitialModel"; }
+            get { return "202101180616515_InitialModel"; }
         }
         
         string IMigrationMetadata.Source

@@ -24,6 +24,7 @@ namespace MobilePhoneStoreEcommerce.Persistence
         public virtual DbSet<SpecificationValue> SpecificationValues { get; set; }
         public virtual DbSet<Product> Products { get; set; }
         public virtual DbSet<Customer> Cutomers { get; set; }
+        public virtual DbSet<Seller> Sellers { get; set; }
         public virtual DbSet<Cart> Carts { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<ProductsOfOrder> ProductsOfOrders { get; set; }
@@ -39,6 +40,7 @@ namespace MobilePhoneStoreEcommerce.Persistence
             modelBuilder.Configurations.Add(new CategoryConfiguration());
             modelBuilder.Configurations.Add(new ProducerConfiguration());
             modelBuilder.Configurations.Add(new CustomerConfiguration());
+            modelBuilder.Configurations.Add(new SellerConfiguration());
             modelBuilder.Configurations.Add(new ProductSpecificationConfiguration());
             modelBuilder.Configurations.Add(new SpecificationValueConfiguration());
             modelBuilder.Configurations.Add(new ProductConfiguration());

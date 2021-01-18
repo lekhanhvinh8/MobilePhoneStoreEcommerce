@@ -74,7 +74,27 @@ namespace MobilePhoneStoreEcommerce.Models.ControllerModels
             }
         }
 
-        public bool AddCustomer(int customerId, string name, string phone, string email)
+        public bool AddSeller (int sellerId, string name, string phone, string email, string address)
+        {
+            try
+            {
+                var newSeller = new Seller();
+                newSeller.ID = sellerId;
+                newSeller.Name = name;
+                newSeller.PhoneNumber = phone;
+                newSeller.Email = email;
+                newSeller.WarehouseAddress = address;
+                _context.Sellers.Add(newSeller);
+                _context.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public bool AddCustomer(int customerId, string name, string phone, string email, string address)
         {
             try
             {
@@ -83,6 +103,7 @@ namespace MobilePhoneStoreEcommerce.Models.ControllerModels
                 newCustomer.Name = name;
                 newCustomer.PhoneNumber = phone;
                 newCustomer.Email = email;
+                newCustomer.DeliveryAddress = address;
                 _context.Cutomers.Add(newCustomer);
                 _context.SaveChanges();
                 return true;

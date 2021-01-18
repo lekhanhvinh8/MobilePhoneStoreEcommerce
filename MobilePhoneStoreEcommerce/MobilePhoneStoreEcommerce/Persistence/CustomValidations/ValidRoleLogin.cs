@@ -36,15 +36,15 @@ namespace MobilePhoneStoreDBMS.Models.CustomValidations
 
             var roleID = accountInDb.Role.ID;
 
-            if (roleID != loginViewModel.RoleID && loginViewModel.RoleID != RoleIds.Unknown)
-                return new ValidationResult("you are not logged in with the correct role");
+            //if (roleID != loginViewModel.RoleID && loginViewModel.RoleID != RoleIds.Unknown)
+            //    return new ValidationResult("You are not logged in with the correct role");
 
             return ValidationResult.Success;
         }
         private int Login(string username, string password)
         {
             string pwd = AccountModels.Encrypt(password, true);
-            var account = _unitOfWork.Accounts.SingleOrDefault(a => a.UserName == username && a.PasswordHash == password);
+            var account = _unitOfWork.Accounts.SingleOrDefault(a => a.UserName == username && a.PasswordHash == pwd);
             var res = 0;
             if (account != null)
             {

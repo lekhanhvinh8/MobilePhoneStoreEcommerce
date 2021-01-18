@@ -24,6 +24,7 @@ namespace MobilePhoneStoreEcommerce.Core.Domain
         public int Price { get; set; }
         public int ProducerID { get; set; }
         public int CategoryID { get; set; }
+        public int SellerID { get; set; }
 
         public virtual AvatarOfProduct AvatarOfProduct { get; set; }
         public virtual List<Cart> Carts { get; set; }
@@ -34,5 +35,6 @@ namespace MobilePhoneStoreEcommerce.Core.Domain
         public virtual List<Customer> Wishlists { get; set; }
         public virtual List<StarRating> StarRatings { get; set; }
         public virtual List<Comment> Comments { get; set; }
+        public virtual Seller Seller { get; set; }
     }
 }

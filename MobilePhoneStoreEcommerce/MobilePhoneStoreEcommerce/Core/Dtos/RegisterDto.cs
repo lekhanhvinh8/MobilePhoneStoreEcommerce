@@ -27,5 +27,8 @@ namespace MobilePhoneStoreEcommerce.Core.Dtos
 
         [Required(ErrorMessage = "Please choose your account type")]
         public int AccountType { get; set; }
+
+        [Required(ErrorMessage = "Please enter your address")]
+        public string Address { get; set; }
     }
 }

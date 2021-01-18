@@ -9,7 +9,7 @@ namespace MobilePhoneStoreEcommerce.Core.Dtos
     {
         public ProductForSellerDto()
         {
-            this.SpecificationValuesDto = new List<SpecificationValueDto>();
+            this.SpecificationValuesDtos = new List<SpecificationValueDto>();
         }
 
         public ProductForSellerDto(Product product)
@@ -27,11 +27,11 @@ namespace MobilePhoneStoreEcommerce.Core.Dtos
             this.ProducerName = product.Producer.Name;
             this.Quantity = product.Quantity;
             this.Status = product.Status;
-            this.SpecificationValuesDto = new List<SpecificationValueDto>();
+            this.SpecificationValuesDtos = new List<SpecificationValueDto>();
 
             foreach (var specificationValue in product.SpecificationValues)
             {
-                this.SpecificationValuesDto.Add(new SpecificationValueDto(specificationValue));
+                this.SpecificationValuesDtos.Add(new SpecificationValueDto(specificationValue));
             }
         }
 
@@ -50,7 +50,6 @@ namespace MobilePhoneStoreEcommerce.Core.Dtos
         [Required]
         [Range(0, int.MaxValue)]
         public int Price { get; set; }
-        public string Image { get; set; }
 
         [Required]
         public int ProducerID { get; set; }
@@ -59,7 +58,7 @@ namespace MobilePhoneStoreEcommerce.Core.Dtos
         [Required]
         public int CategoryID { get; set; }
         public string CategoryName { get; set; }
-        public virtual ICollection<SpecificationValueDto> SpecificationValuesDto { get; set; }
+        public virtual ICollection<SpecificationValueDto> SpecificationValuesDtos { get; set; }
 
         public Product CreateModel()
         {
@@ -73,22 +72,8 @@ namespace MobilePhoneStoreEcommerce.Core.Dtos
             product.Quantity = this.Quantity;
             product.Status = this.Status;
 
-            /*
-            foreach (var specificationValueDto in this.SpecificationValuesDto)
-            {
-                var context = new MobilePhoneStoreDBMSEntities(); -->> it will throw an exception: Operation Exception because of the conflic context, calling in 2 different place.
-
-                var specificationValue = context.SpecificationValues.SingleOrDefault(s => s.SpecificationID == specificationValueDto.SpecificationID
-                                                                                          && s.Value == specificationValueDto.Value);
-                if (specificationValue == null)
-                    throw new Exception("Can not find this specification or value");
-
-                product.SpecificationValues.Add(specificationValue);
-            }
-            */
             return product;
         }
-
         public void UpdateModel(Product product)
         {
             product.Name = this.Name;
@@ -98,13 +83,6 @@ namespace MobilePhoneStoreEcommerce.Core.Dtos
             product.ProducerID = this.ProducerID;
             product.Quantity = this.Quantity;
             product.Status = this.Status;
-
-            /*
-            foreach (var specificationValueDto in this.SpecificationValuesDto)
-            {
-                product.SpecificationValues.Add(specificationValueDto.CreateModel());
-            }
-            */
         }
     }
 }

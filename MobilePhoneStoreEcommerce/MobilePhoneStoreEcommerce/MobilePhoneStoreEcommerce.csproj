@@ -163,11 +163,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="api\AvatarOfProductController.cs" />
+    <Compile Include="api\AvatarOfProductsController.cs" />
     <Compile Include="api\CategoriesController.cs" />
     <Compile Include="api\OrdersController.cs" />
     <Compile Include="api\ProducersController.cs" />
-    <Compile Include="api\ProductForSellerController.cs" />
+    <Compile Include="api\ProductForSellersController.cs" />
     <Compile Include="api\SpecificationsController.cs" />
     <Compile Include="api\SpecificationValuesController.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
@@ -191,6 +191,7 @@
     <Compile Include="Core\Domain\ProductsOfOrder.cs" />
     <Compile Include="Core\Domain\ProductSpecification.cs" />
     <Compile Include="Core\Domain\Role.cs" />
+    <Compile Include="Core\Domain\Seller.cs" />
     <Compile Include="Core\Domain\SpecificationValue.cs" />
     <Compile Include="Core\Domain\StarRating.cs" />
     <Compile Include="Core\Dtos\AccountDto.cs" />
@@ -220,13 +221,14 @@
     <Compile Include="Core\Repositories\IRoleRepository.cs" />
     <Compile Include="Core\Repositories\ISpecificationValueRepository.cs" />
     <Compile Include="Core\Repositories\IStarRatingRepository.cs" />
+    <Compile Include="Core\Services\IProductManagement.cs" />
     <Compile Include="Core\ViewModels\LoginViewModel.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202101160224441_InitialModel.cs" />
-    <Compile Include="Migrations\202101160224441_InitialModel.designer.cs">
-      <DependentUpon>202101160224441_InitialModel.cs</DependentUpon>
+    <Compile Include="Migrations\202101180616515_InitialModel.cs" />
+    <Compile Include="Migrations\202101180616515_InitialModel.designer.cs">
+      <DependentUpon>202101180616515_InitialModel.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ControllerModels\AccountModels.cs" />
@@ -250,6 +252,7 @@
     <Compile Include="Persistence\EntitiyConfigurations\ProductsOfOrderConfiguration.cs" />
     <Compile Include="Persistence\EntitiyConfigurations\ProductSpecificationConfiguration.cs" />
     <Compile Include="Persistence\EntitiyConfigurations\RoleConfiguration.cs" />
+    <Compile Include="Persistence\EntitiyConfigurations\SellerConfiguration.cs" />
     <Compile Include="Persistence\EntitiyConfigurations\SpecificationValueConfiguration.cs" />
     <Compile Include="Persistence\EntitiyConfigurations\StartRatingConfiguration.cs" />
     <Compile Include="Persistence\Repositories\AccountRepository.cs" />
@@ -268,6 +271,7 @@
     <Compile Include="Persistence\Repositories\RoleRepository.cs" />
     <Compile Include="Persistence\Repositories\SpecificationValueRepository.cs" />
     <Compile Include="Persistence\Repositories\StarRatingRepository.cs" />
+    <Compile Include="Persistence\Services\ProductManagement.cs" />
     <Compile Include="Persistence\UnitOfWork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -571,8 +575,8 @@
     <Content Include="Scripts\jquery-3.4.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202101160224441_InitialModel.resx">
-      <DependentUpon>202101160224441_InitialModel.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202101180616515_InitialModel.resx">
+      <DependentUpon>202101180616515_InitialModel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

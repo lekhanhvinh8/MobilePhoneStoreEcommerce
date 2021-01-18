@@ -64,7 +64,7 @@ namespace MobilePhoneStoreEcommerce.Controllers
             else if (result == RoleIds.Customer)
             {
                 Session[SessionNames.CustomerID] = accInDb.ID;
-                return RedirectToAction("Index", "HomeScreen");
+                return RedirectToAction("Index", "Home");
             }
 
             return View(loginViewModel);
@@ -87,7 +87,7 @@ namespace MobilePhoneStoreEcommerce.Controllers
             var code = new AccountModels().RandomString(10);
             var content = "Your account has is successfully created. You need to confirm your email. Your password is: " + code;
 
-            var result = Register(registerDto.AccountType, registerDto.Name, registerDto.PhoneNumber, registerDto.Email, registerDto.Username, code);
+            var result = Register(registerDto.AccountType, registerDto.Name, registerDto.PhoneNumber, registerDto.Email, registerDto.Username, registerDto.Address, code);
             if (result)
             {
                 var sendMail = SendMail(registerDto.Email, subject, content);
@@ -96,16 +96,6 @@ namespace MobilePhoneStoreEcommerce.Controllers
             }
 
             return View(registerDto);
-        }
-
-        public ActionResult Logout(string sessionName)
-        {
-            if (Session[sessionName] == null)
-                throw new System.Web.Http.HttpResponseException(HttpStatusCode.NotFound);
-
-            Session[sessionName] = null;
-
-            return RedirectToAction("Index", "HomeScreen");
         }
 
         private int Login(string username, string password)
@@ -120,7 +110,7 @@ namespace MobilePhoneStoreEcommerce.Controllers
 
             return res;
         }
-        private bool Register(int accType, string name, string phone, string email, string username, string password)
+        private bool Register(int accType, string name, string phone, string email, string username,string address, string password)
         {
             string pwd = AccountModels.Encrypt(password, true);
 
@@ -137,8 +127,17 @@ namespace MobilePhoneStoreEcommerce.Controllers
                 newAcc.RoleID = accType;
                 if (new AccountModels().AddAcc(newAcc))
                 {
-                    if (new AccountModels().AddCustomer(newAcc.ID, name, phone, email))
+                    if(accType == RoleIds.Seller)
                     {
+                        if (new AccountModels().AddCustomer(newAcc.ID, name, phone, email, address))
+                        {
+                        }
+                    }
+                    else if(accType == RoleIds.Customer)
+                    {
+                        if (new AccountModels().AddCustomer(newAcc.ID, name, phone, email, address))
+                        {
+                        }
                     }
                 }
                 return true;
@@ -185,7 +184,18 @@ namespace MobilePhoneStoreEcommerce.Controllers
                 Console.WriteLine(e.Message);
                 return false;
             }
+        }
 
+        public ActionResult Logout(string sessionName)
+        {
+            if (Session[sessionName] == null)
+                throw new System.Web.Http.HttpResponseException(HttpStatusCode.NotFound);
+
+            Session[sessionName] = null;
+            Session.Abandon();
+            Session.RemoveAll();
+
+            return RedirectToAction("Index", "Home");
         }
     }
 }
