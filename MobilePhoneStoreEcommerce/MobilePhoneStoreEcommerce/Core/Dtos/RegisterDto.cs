@@ -25,13 +25,7 @@ namespace MobilePhoneStoreEcommerce.Core.Dtos
         [ValidUserNameRegister]
         public string Username { get; set; }
 
-        [Required(ErrorMessage = "Please enter your password")]
-        [StringLength(20, MinimumLength = 6, ErrorMessage = "Password shoud be between 6 and 20 characters")]
-        public string Password { get; set; }
-
-        [NotMapped]
-        [Required(ErrorMessage = "Please confirm your password")]
-        [Compare("Password")]
-        public string Confirm { get; set; }
+        [Required(ErrorMessage = "Please choose your account type")]
+        public int AccountType { get; set; }
     }
 }

@@ -175,6 +175,7 @@
     <Compile Include="App_Start\NinjectWebCommon.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Core\Domain\Account.cs" />
@@ -228,6 +229,7 @@
       <DependentUpon>202101160224441_InitialModel.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\ControllerModels\AccountModels.cs" />
     <Compile Include="Models\ViewModels\AllRoles.cs" />
     <Compile Include="Persistence\ApplicationDbContext.cs" />
     <Compile Include="Persistence\Consts\OrderStates.cs" />
@@ -434,6 +436,7 @@
     <Content Include="Content\DataTables\images\sort_desc_disabled.png" />
     <Content Include="Content\DataTables\swf\flashExport.swf" />
     <Content Include="Content\resources\images\adminIcon.png" />
+    <Content Include="Content\sb-admin-2.css" />
     <Content Include="Content\select2.min.css" />
     <Content Include="Content\Seller.css" />
     <Content Include="favicon.ico" />
@@ -547,6 +550,8 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
+    <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="Views\Account\Register.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

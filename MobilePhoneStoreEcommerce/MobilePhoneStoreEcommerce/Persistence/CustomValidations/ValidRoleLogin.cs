@@ -1,5 +1,6 @@
 ﻿using MobilePhoneStoreEcommerce.Core;
 using MobilePhoneStoreEcommerce.Core.ViewModels;
+using MobilePhoneStoreEcommerce.Models.ControllerModels;
 using MobilePhoneStoreEcommerce.Persistence;
 using MobilePhoneStoreEcommerce.Persistence.Consts;
 using System;
@@ -42,7 +43,15 @@ namespace MobilePhoneStoreDBMS.Models.CustomValidations
         }
         private int Login(string username, string password)
         {
-            return 1;
+            string pwd = AccountModels.Encrypt(password, true);
+            var account = _unitOfWork.Accounts.SingleOrDefault(a => a.UserName == username && a.PasswordHash == password);
+            var res = 0;
+            if (account != null)
+            {
+                res = account.RoleID;
+            }
+
+            return res;
         }
     }
 }
