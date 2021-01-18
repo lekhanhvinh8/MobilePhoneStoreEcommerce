@@ -8,10 +8,10 @@ using System.Web.Http;
 
 namespace MobilePhoneStoreEcommerce.api
 {
-    public class AvatarOfProductController : ApiController
+    public class AvatarOfProductsController : ApiController
     {
         private IUnitOfWork _unitOfWork;
-        public AvatarOfProductController(IUnitOfWork unitOfWork)
+        public AvatarOfProductsController(IUnitOfWork unitOfWork)
         {
             this._unitOfWork = unitOfWork;
         }

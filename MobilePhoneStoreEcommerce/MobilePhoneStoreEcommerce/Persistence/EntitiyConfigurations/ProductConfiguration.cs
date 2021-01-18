@@ -26,11 +26,16 @@ namespace MobilePhoneStoreEcommerce.Persistence.EntitiyConfigurations
                 .WithMany(c => c.Products)
                 .HasForeignKey(p => p.CategoryID)
                 .WillCascadeOnDelete(false);
+
             HasRequired(p => p.Producer)
                 .WithMany(p => p.Products)
                 .HasForeignKey(p => p.ProducerID)
                 .WillCascadeOnDelete(false);
 
+            HasRequired(p => p.Seller)
+                .WithMany(s => s.Products)
+                .HasForeignKey(p => p.SellerID)
+                .WillCascadeOnDelete(false);
         }
     }
 }

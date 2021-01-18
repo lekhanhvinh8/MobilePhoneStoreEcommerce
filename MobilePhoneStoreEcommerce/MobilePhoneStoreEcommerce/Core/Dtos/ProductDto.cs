@@ -24,7 +24,6 @@ namespace MobilePhoneStoreEcommerce.Core.Dtos
         [Required]
         [Range(0, int.MaxValue)]
         public int Price { get; set; }
-        public string Image { get; set; }
 
         [Required]
         public int ProducerID { get; set; }
@@ -36,6 +35,6 @@ namespace MobilePhoneStoreEcommerce.Core.Dtos
         public virtual ICollection<SpecificationValueDto> SpecificationValuesDto { get; set; }
 
         [Required]
-        public byte[] ImageFile { get; set; }
+        public byte[] Avatar { get; set; }
     }
 }

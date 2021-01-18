@@ -10,13 +10,14 @@ using System.IO;
 using Newtonsoft.Json;
 using MobilePhoneStoreEcommerce.Core;
 using MobilePhoneStoreEcommerce.Core.Dtos;
+using MobilePhoneStoreEcommerce.Core.Services;
 
 namespace MobilePhoneStoreEcommerce.api
 {
-    public class ProductForSellerController : ApiController
+    public class ProductForSellersController : ApiController
     {
         private IUnitOfWork _unitOfWork;
-        public ProductForSellerController(IUnitOfWork unitOfWork)
+        public ProductForSellersController(IUnitOfWork unitOfWork)
         {
             this._unitOfWork = unitOfWork;
         }
@@ -58,81 +59,31 @@ namespace MobilePhoneStoreEcommerce.api
         }
 
         [System.Web.Http.HttpPost]
-        public ProductForSellerDto Create(ProductForSellerDto productForSellerDto)
+        public ProductForSellerDto Create()
         {
-            var product = productForSellerDto.CreateModel();
-
-            foreach (var specificationValueDto in productForSellerDto.SpecificationValuesDto)
-            {
-                var specificationValue = this._unitOfWork.SpecificationValues.SingleOrDefault(s => s.ProductSpecificationID == specificationValueDto.SpecificationID
-                                                                                          && s.Value == specificationValueDto.Value);
-                if (specificationValue == null)
-                    throw new Exception("Can not find this specification or value");
-
-                product.SpecificationValues.Add(specificationValue);
-            }
-
-
-            this._unitOfWork.Products.Add(product);
-            this._unitOfWork.Complete();
-
-            var productInDb = this._unitOfWork.Products.SingleOrDefault(p => p.ID == product.ID);
-
-
-            return new ProductForSellerDto(productInDb);
-        }
-
-        [System.Web.Http.HttpPost]
-        public ProductForSellerDto CreateProductFullInfo()
-        {
-            var productDto = new ProductDto();
+            var productForSellerDto = new ProductForSellerDto();
 
             var form = HttpContext.Current.Request.Form;
 
             //Get data
-            productDto.Name = form["name"].ToString();
-            productDto.Description = form["description"].ToString();
-            productDto.ProducerID = int.Parse(form["producerID"].ToString());
-            productDto.CategoryID = int.Parse(form["categoryID"].ToString());
-            productDto.Price = int.Parse(form["price"].ToString());
-            productDto.Quantity = int.Parse(form["quantity"].ToString());
-            productDto.Status = Boolean.Parse(form["status"]);
-            productDto.SpecificationValuesDto = JsonConvert.DeserializeObject<List<SpecificationValueDto>>(form.Get("specificationValuesDto"));
-            //var a = JsonConvert.DeserializeObject(form.Get("item"));
-
-            //serialize specification values to string -- format: "1,16GB|2,128GB|3,2 Sims"
-            string specificationValuesString = "";
-            foreach (var specificationValueDto in productDto.SpecificationValuesDto)
-            {
-                string record = specificationValueDto.SpecificationID.ToString() + "," + specificationValueDto.Value;
-                specificationValuesString += record + "|";
-            }
-            if(specificationValuesString.Length > 1)
-                specificationValuesString = specificationValuesString.Substring(0, specificationValuesString.Length - 1);
+            productForSellerDto.Name = form["name"].ToString();
+            productForSellerDto.Description = form["description"].ToString();
+            productForSellerDto.ProducerID = int.Parse(form["producerID"].ToString());
+            productForSellerDto.CategoryID = int.Parse(form["categoryID"].ToString());
+            productForSellerDto.Price = int.Parse(form["price"].ToString());
+            productForSellerDto.Quantity = int.Parse(form["quantity"].ToString());
+            productForSellerDto.Status = Boolean.Parse(form["status"]);
+            productForSellerDto.SpecificationValuesDtos = JsonConvert.DeserializeObject<List<SpecificationValueDto>>(form.Get("specificationValuesDto"));
 
             //Get image file
             var httpPostedFile = HttpContext.Current.Request.Files["imageFile"];
             BinaryReader reader = new BinaryReader(httpPostedFile.InputStream);
             var imageFile = reader.ReadBytes(httpPostedFile.ContentLength);
-            productDto.ImageFile = imageFile;
 
-            var isSuccess = new ObjectParameter("isSuccess", typeof(bool));
-            /*
-            this._unitOfWork.AddNewProduct(productDto.Name
-                                        , productDto.Description
-                                        , productDto.Quantity
-                                        , productDto.Status
-                                        , productDto.Price
-                                        , productDto.ProducerID
-                                        , productDto.CategoryID
-                                        , productDto.ImageFile
-                                        , specificationValuesString
-                                        , isSuccess);
-            */
-            if (!(bool)isSuccess.Value)
-                throw new Exception("Failure inserting sequence of data");
+            this._unitOfWork.Products.Create(productForSellerDto, imageFile);
+            this._unitOfWork.Complete();
 
-            var product = this._unitOfWork.Products.SingleOrDefault(p => p.Name == productDto.Name);
+            var product = this._unitOfWork.Products.SingleOrDefault(p => p.Name == productForSellerDto.Name);
 
             if (product == null)
                 throw new Exception("Not found");
@@ -152,7 +103,7 @@ namespace MobilePhoneStoreEcommerce.api
 
             product.SpecificationValues.Clear();
             
-            foreach (var specificationValueDto in productForSellerDto.SpecificationValuesDto)
+            foreach (var specificationValueDto in productForSellerDto.SpecificationValuesDtos)
             {
                 var specificationValue = this._unitOfWork.SpecificationValues.SingleOrDefault(s => s.ProductSpecificationID == specificationValueDto.SpecificationID
                                                                                           && s.Value == specificationValueDto.Value);

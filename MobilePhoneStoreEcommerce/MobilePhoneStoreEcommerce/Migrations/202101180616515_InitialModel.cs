@@ -62,13 +62,16 @@
                         Price = c.Int(nullable: false),
                         ProducerID = c.Int(nullable: false),
                         CategoryID = c.Int(nullable: false),
+                        SellerID = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.ID)
                 .ForeignKey("dbo.Categories", t => t.CategoryID)
                 .ForeignKey("dbo.Producers", t => t.ProducerID)
+                .ForeignKey("dbo.Sellers", t => t.SellerID)
                 .Index(t => t.Name, unique: true)
                 .Index(t => t.ProducerID)
-                .Index(t => t.CategoryID);
+                .Index(t => t.CategoryID)
+                .Index(t => t.SellerID);
             
             CreateTable(
                 "dbo.AvatarOfProducts",
@@ -159,6 +162,21 @@
                 .Index(t => t.OrderID);
             
             CreateTable(
+                "dbo.Sellers",
+                c => new
+                    {
+                        ID = c.Int(nullable: false),
+                        Name = c.String(nullable: false),
+                        PhoneNumber = c.String(nullable: false),
+                        Email = c.String(nullable: false, maxLength: 249),
+                        WarehouseAddress = c.String(nullable: false),
+                    })
+                .PrimaryKey(t => t.ID)
+                .ForeignKey("dbo.Accounts", t => t.ID)
+                .Index(t => t.ID)
+                .Index(t => t.Email, unique: true);
+            
+            CreateTable(
                 "dbo.SpecificationValues",
                 c => new
                     {
@@ -245,6 +263,8 @@
             DropForeignKey("dbo.SpecificationValues", "ProductSpecificationID", "dbo.ProductSpecifications");
             DropForeignKey("dbo.SpecificationValueProducts", "Product_ID", "dbo.Products");
             DropForeignKey("dbo.SpecificationValueProducts", new[] { "SpecificationValue_ProductSpecificationID", "SpecificationValue_Value" }, "dbo.SpecificationValues");
+            DropForeignKey("dbo.Products", "SellerID", "dbo.Sellers");
+            DropForeignKey("dbo.Sellers", "ID", "dbo.Accounts");
             DropForeignKey("dbo.ProductsOfOrders", "ProductID", "dbo.Products");
             DropForeignKey("dbo.ProductsOfOrders", "OrderID", "dbo.Orders");
             DropForeignKey("dbo.Invoices", "OrderID", "dbo.Orders");
@@ -265,6 +285,8 @@
             DropIndex("dbo.StarRatings", new[] { "CustomerID" });
             DropIndex("dbo.ProductSpecifications", new[] { "Name" });
             DropIndex("dbo.SpecificationValues", new[] { "ProductSpecificationID" });
+            DropIndex("dbo.Sellers", new[] { "Email" });
+            DropIndex("dbo.Sellers", new[] { "ID" });
             DropIndex("dbo.Invoices", new[] { "OrderID" });
             DropIndex("dbo.Orders", new[] { "CustomerID", "OrderTime" });
             DropIndex("dbo.ProductsOfOrders", new[] { "ProductID" });
@@ -274,6 +296,7 @@
             DropIndex("dbo.Comments", new[] { "CustomerID" });
             DropIndex("dbo.Categories", new[] { "Name" });
             DropIndex("dbo.AvatarOfProducts", new[] { "ProductID" });
+            DropIndex("dbo.Products", new[] { "SellerID" });
             DropIndex("dbo.Products", new[] { "CategoryID" });
             DropIndex("dbo.Products", new[] { "ProducerID" });
             DropIndex("dbo.Products", new[] { "Name" });
@@ -289,6 +312,7 @@
             DropTable("dbo.StarRatings");
             DropTable("dbo.ProductSpecifications");
             DropTable("dbo.SpecificationValues");
+            DropTable("dbo.Sellers");
             DropTable("dbo.Invoices");
             DropTable("dbo.Orders");
             DropTable("dbo.ProductsOfOrders");
