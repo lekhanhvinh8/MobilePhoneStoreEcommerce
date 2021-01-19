@@ -26,7 +26,6 @@ namespace MobilePhoneStoreEcommerce.Controllers
         public ActionResult Login(int roleID = RoleIds.Unknown)
         {
             var loginViewModel = new LoginViewModel() { AccountDto = new AccountDto(), RoleID = roleID };
-
             return View(loginViewModel);
         }
 

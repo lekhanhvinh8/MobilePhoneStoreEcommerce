@@ -105,3 +105,7 @@ D:\HK1_2020-2021\E-Commerce\Đồ án\MobilePhoneStoreEcommerce\MobilePhoneStore
 D:\HK1_2020-2021\E-Commerce\Đồ án\MobilePhoneStoreEcommerce\MobilePhoneStoreEcommerce\obj\Debug\MobilePhoneStoreEcommerce.dll
 D:\HK1_2020-2021\E-Commerce\Đồ án\MobilePhoneStoreEcommerce\MobilePhoneStoreEcommerce\obj\Debug\MobilePhoneStoreEcommerce.pdb
 D:\HK1_2020-2021\E-Commerce\Đồ án\MobilePhoneStoreEcommerce\MobilePhoneStoreEcommerce\obj\Debug\MobilePhoneStoreEcommerce.csprojAssemblyReference.cache
+D:\HK1_2020-2021\E-Commerce\Đồ án\MobilePhoneStoreEcommerce\MobilePhoneStoreEcommerce\bin\PagedList.dll
+D:\HK1_2020-2021\E-Commerce\Đồ án\MobilePhoneStoreEcommerce\MobilePhoneStoreEcommerce\bin\PagedList.Mvc.dll
+D:\HK1_2020-2021\E-Commerce\Đồ án\MobilePhoneStoreEcommerce\MobilePhoneStoreEcommerce\bin\PagedList.xml
+D:\HK1_2020-2021\E-Commerce\Đồ án\MobilePhoneStoreEcommerce\MobilePhoneStoreEcommerce\bin\PagedList.Mvc.xml

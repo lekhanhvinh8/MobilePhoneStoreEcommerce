@@ -77,6 +77,12 @@
     <Reference Include="Ninject.Web.WebApi, Version=3.3.1.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
       <HintPath>..\packages\Ninject.Web.WebApi.3.3.1\lib\net45\Ninject.Web.WebApi.dll</HintPath>
     </Reference>
+    <Reference Include="PagedList, Version=1.17.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\PagedList.1.17.0.0\lib\net40\PagedList.dll</HintPath>
+    </Reference>
+    <Reference Include="PagedList.Mvc, Version=4.5.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\PagedList.Mvc.4.5.0.0\lib\net40\PagedList.Mvc.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -178,6 +184,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\HomeScreenController.cs" />
     <Compile Include="Core\Domain\Account.cs" />
     <Compile Include="Core\Domain\AvatarOfProduct.cs" />
     <Compile Include="Core\Domain\Cart.cs" />
@@ -232,6 +239,7 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ControllerModels\AccountModels.cs" />
+    <Compile Include="Models\ControllerModels\ProductModel.cs" />
     <Compile Include="Models\ViewModels\AllRoles.cs" />
     <Compile Include="Persistence\ApplicationDbContext.cs" />
     <Compile Include="Persistence\Consts\OrderStates.cs" />
@@ -276,6 +284,45 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\css\flexslider.css" />
+    <Content Include="Assets\css\responsiveslides.css" />
+    <Content Include="Assets\css\style.css" />
+    <Content Include="Assets\css\style1.css" />
+    <Content Include="Assets\images\0083f9a69c_904.png" />
+    <Content Include="Assets\images\1.png" />
+    <Content Include="Assets\images\2.png" />
+    <Content Include="Assets\images\3.jpg" />
+    <Content Include="Assets\images\admin.png" />
+    <Content Include="Assets\images\admin1.png" />
+    <Content Include="Assets\images\arrow.png" />
+    <Content Include="Assets\images\arrow1.png" />
+    <Content Include="Assets\images\btn-cart.png" />
+    <Content Include="Assets\images\btn-details.png" />
+    <Content Include="Assets\images\cal.png" />
+    <Content Include="Assets\images\cal1.png" />
+    <Content Include="Assets\images\cart-icon.png" />
+    <Content Include="Assets\images\facebook.png" />
+    <Content Include="Assets\images\grid-img1.jpg" />
+    <Content Include="Assets\images\grid-img2.jpg" />
+    <Content Include="Assets\images\grid-img3.jpg" />
+    <Content Include="Assets\images\link-compare.png" />
+    <Content Include="Assets\images\link-wishlist.png" />
+    <Content Include="Assets\images\logo.png" />
+    <Content Include="Assets\images\menu-bar.png" />
+    <Content Include="Assets\images\noi_bat_1.png" />
+    <Content Include="Assets\images\noi_bat_2.jpg" />
+    <Content Include="Assets\images\noi_bat_3.jpg" />
+    <Content Include="Assets\images\post-in.png" />
+    <Content Include="Assets\images\quotes_alt.png" />
+    <Content Include="Assets\images\remove.png" />
+    <Content Include="Assets\images\rss.png" />
+    <Content Include="Assets\images\sepHor.png" />
+    <Content Include="Assets\images\twitter.png" />
+    <Content Include="Assets\js\imagezoom.js" />
+    <Content Include="Assets\js\jquery.flexslider.js" />
+    <Content Include="Assets\js\jquery.livequery.js" />
+    <Content Include="Assets\js\jquery.min.js" />
+    <Content Include="Assets\js\responsiveslides.min.js" />
     <Content Include="Content\Account.css" />
     <Content Include="Content\Admin.css" />
     <Content Include="Content\bootstrap-theme.css" />
@@ -439,6 +486,7 @@
     <Content Include="Content\DataTables\images\sort_desc.png" />
     <Content Include="Content\DataTables\images\sort_desc_disabled.png" />
     <Content Include="Content\DataTables\swf\flashExport.swf" />
+    <Content Include="Content\PagedList.css" />
     <Content Include="Content\resources\images\adminIcon.png" />
     <Content Include="Content\sb-admin-2.css" />
     <Content Include="Content\select2.min.css" />
@@ -556,10 +604,11 @@
     <Content Include="Views\Admin\Index.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Account\Register.cshtml" />
+    <Content Include="Views\Shared\MainLayout.cshtml" />
+    <Content Include="Views\HomeScreen\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Shared\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
