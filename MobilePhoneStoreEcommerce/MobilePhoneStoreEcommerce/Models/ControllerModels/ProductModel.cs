@@ -16,9 +16,9 @@ namespace MobilePhoneStoreEcommerce.Models.ControllerModels
         {
             _context = new ApplicationDbContext();
         }
-        public IEnumerable<Product> allProducts(int page, int pagesize)
+        public IEnumerable<Product> allAvailableProducts(int page, int pagesize)
         {
-            return _context.Products.OrderBy(x => x.Name).ToPagedList(page, pagesize);
+            return _context.Products.Where(x => x.Status == true).OrderBy(x => x.Name).ToPagedList(page, pagesize);
         }
     }
 }

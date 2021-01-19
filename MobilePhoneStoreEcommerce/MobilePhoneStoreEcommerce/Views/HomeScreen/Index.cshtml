@@ -25,7 +25,7 @@
 				{
 					<div class="grid_1_of_4 images_1_of_4 products-info">
 						<a href="@Url.Action("Details", "HomeScreen", new { id = items.ID })">
-							<img src="/api/AvatarOfProduct/GetAvatarOfProduct?ProductId= @items.ID" style="height: 282px; object-fit: cover;" />
+							<img src="/api/AvatarOfProducts/Get?ProductId= @items.ID" style="height: 282px; object-fit: cover;" />
 							@items.Name
 						</a>
 						<h3 class="shopp-price">@items.Price &nbsp;đ</h3>

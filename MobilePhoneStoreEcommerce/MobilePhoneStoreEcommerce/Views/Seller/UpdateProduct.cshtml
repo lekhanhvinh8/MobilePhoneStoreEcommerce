@@ -1,0 +1,555 @@
+﻿@model MobilePhoneStoreEcommerce.Core.ViewModels.ProductForSellerViewModel
+@using MobilePhoneStoreEcommerce.Persistence.Consts
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>UpdateProduct</title>
+
+    <link rel="stylesheet" type="text/css" href="~/Content/bootstrap.css" />
+    <link href="~/Content/select2.min.css" rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="~/Content/Seller.css" type="text/css" />
+</head>
+<body>
+    <header>
+        <div class="navbar navbar-default">
+            <div class="container">
+                <div class="navbar-header">
+                    @Html.ActionLink("Home", "Index", "HomeScreen", new { area = "" }, new { @class = "navbar-brand" })
+                    @Html.ActionLink("Seller", "Index", "Seller", new { sellerID = Model.SellerID }, new { @class = "navbar-brand" })
+
+                </div>
+                <div class="navbar-collapse collapse">
+                    <div class="nav navbar-nav navbar-right">
+                        <img src="~/Content/resources/images/adminIcon.png" style="height: 50px;" />
+                        <ul class="nav navbar-nav navbar-right">
+                            <li>@Html.ActionLink("Log out", "Logout", "Account", routeValues: new { sessionName = SessionNames.SellerID }, htmlAttributes: new { id = "logoutLink" })</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </header>
+
+    <br />
+    <div class="container">
+        <form role="form" id="form-product">
+            <div class="form-group">
+                <label for="name" class="control-label">Name of product</label>
+                <input type="text" class="form-control" name="name" />
+            </div>
+            <div class="form-group">
+                <label for="description" class="control-label">Description</label>
+                <textarea class="form-control" rows="3" name="description"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="producer" class="control-label">Producer</label>
+                <select id="select-producer" name="producer" style="width: 567px;">
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="category" class="control-label">Category</label>
+                <select id="select-category" name="category" style="width: 567px;">
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="image" class="control-label">Image</label>
+                <input id="select-image" type="file" accept=".jpg" name="image1" />
+            </div>
+            <div class="form-group">
+                <img id="avatar-preview" class="img-thumbnail" style="width: 200px; height: 200px; object-fit: cover" src="#" />
+            </div>
+            <div class="form-group">
+                <label for="price" class="control-label">Price</label>
+                <input type="number" class="form-control" name="price" />
+            </div>
+            <div class="form-group">
+                <label for="quantity" class="control-label">Quantity</label>
+                <input type="number" class="form-control" name="quantity" />
+            </div>
+            <div class="form-group">
+                <label for="specifications" class="control-label">Specifications</label>
+                <div>
+                    <button type="button" id="btn-add-new-specification" class="btn btn-primary">Add specification</button>
+                    <div id="dialog-add-specification" style="display:none;">
+                        <div class="form-group">
+                            <label for="specification">Specification name</label>
+                            <select class="form-control" id="select-specification" name="specification" style="width: 567px;">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <table id="table-specifications" class="table table-hover table-striped table-bordered" name="specifications">
+                    <thead>
+                        <tr>
+                            <td>Specification Name</td>
+                            <td>Value</td>
+                            <td>Delete</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </form>
+
+        <footer>
+            <div class="footer-left">
+                <button type="button" id="btn-delete" class="btn btn-danger">Delete</button>
+            </div>
+            <div class="footer-right">
+                <button type="button" id="btn-cancel" class="btn btn-danger">Cancel</button>
+                <button type="button" id="btn-save-and-hide" class="btn btn-warning">Save and hide</button>
+                <button type="button" id="btn-save-and-show" class="btn btn-success">Save and show</button>
+            </div>
+        </footer>
+    </div>
+
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/bootbox.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+    <script src="~/Scripts/select2.min.js" type='text/javascript'></script>
+
+    <script>
+        var isImageChange = false;
+
+        $(document).ready(function () {
+            $.ajax({
+                url: "/api/Producers/GetAll",
+                method: "Get",
+                async: false,
+                success: function (response) {
+                    for (var i = 0; i < response.length; i++) {
+                        $('#select-producer').append($('<option>', {
+                            value: response[i].producerID,
+                            text: response[i].name,
+                        }));
+                    }
+                    $("#select-producer").select2();
+                },
+            });
+
+            $.ajax({
+                url: "/api/Categories/GetAll",
+                method: "Get",
+                async: false,
+                success: function (response) {
+                    for (var i = 0; i < response.length; i++) {
+                        $('#select-category').append($('<option>', {
+                            value: response[i].categoryID,
+                            text: response[i].name,
+                        }));
+                    }
+                    $("#select-category").select2();
+                },
+            });
+
+            AssignInitialValue();
+
+            $("#select-image").change(function () {
+                isImageChange = true;
+
+                var input = this;
+
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $('#avatar-preview').attr('src', e.target.result);
+                    }
+
+                    reader.readAsDataURL(input.files[0]); // convert to base64 string
+                }
+            });
+
+            $("#table-specifications").on("click", ".js-delete", function () {
+                var button = $(this);
+                button.parents("tr").remove();
+            });
+
+            $("#btn-add-new-specification").on("click", function () {
+                $('#select-specification').find("option").remove();
+
+                $.ajax({
+                    url: "/api/Specifications/GetAll",
+                    method: "Get",
+                    success: function (response) {
+                        for (var i = 0; i < response.length; i++) {
+
+                            var isIn = false;
+
+                            $("#table-specifications tbody tr").each(function () {
+                                if (response[i].specificationID.toString() == $(this).attr("data-specification-id")) {
+                                    isIn = true;
+                                }
+                            });
+
+                            if (isIn == false) {
+                                $('#select-specification').append($('<option>', {
+                                    value: response[i].specificationID,
+                                    text: response[i].name,
+                                }));
+                            }
+                        }
+
+                        var dialog = bootbox.dialog({
+                            message: $("#dialog-add-specification").html(),
+                            title: "Add new specification",
+                            buttons: [
+                                {
+                                    label: "Back",
+                                    className: "btn btn-danger",
+                                    callback: function () {
+                                        dialog.modal("hide");
+                                    },
+                                },
+                                {
+                                    label: "Add",
+                                    className: "btn btn-primary",
+                                    callback: function () {
+                                        var select = dialog.find("#select-specification");
+
+                                        $.ajax({
+                                            url: "/api/Specifications/Get?id=" + select.val(),
+                                            method: "Get",
+                                            success: function (response) {
+
+                                                var newLine = "<tr data-specification-id=" + select.val() + ">"
+                                                    + "<td>" + response.name + "</td>"
+                                                    + "<td><select class='form-control form-select'>";
+
+                                                for (var i = 0; i < response.values.length; i++) {
+                                                    newLine += "<option>" + response.values[i].value + "</option>";
+                                                }
+
+                                                newLine += "</select></td>";
+
+                                                newLine += "<td><button type='button' class='btn-link js-delete'>Delete</button></td>";
+
+                                                $("#table-specifications tbody").append(newLine);
+                                            },
+                                        });
+                                    }
+                                },
+                            ],
+                        });
+                    },
+                });
+            });
+
+            $("#btn-save-and-show").on("click", function () {
+                UpdateProduct("true");
+            });
+            $("#btn-save-and-hide").on("click", function () {
+                UpdateProduct("false");
+            });
+            $("#btn-cancel").on("click", function () {
+                window.location.href = '/Seller/Index?sellerID=' + @Model.SellerID;
+            });
+            $("#btn-delete").on("click", function () {
+                bootbox.confirm("Are you sure to delete this product", function (result) {
+                    if (result) {
+                        DeleteProduct();
+                    }
+                });
+            });
+            function AssignInitialValue() {
+                var productID = @Model.ProductID;
+
+                $.ajax({
+                    url: "/api/ProductForSellers/Get?productID=" + productID,
+                    method: "Get",
+                    async: false,
+                    success: function (response) {
+                        $("#form-product input[name='name']").val(response.name);
+                        $("#form-product textarea[name='description']").val(response.description);
+                        $("#form-product input[name='price']").val(response.price);
+                        $("#form-product input[name='quantity']").val(response.quantity);
+
+                        $("#form-product select[name='producer']").val(response.producerID);
+                        $("#form-product select[name='producer']").select2().trigger("change");
+
+                        $("#form-product select[name='category']").val(response.categoryID);
+                        $("#form-product select[name='category']").select2().trigger("change");
+
+                        for (var i = 0; i < response.specificationValuesDtos.length; i++) {
+                            $.ajax({
+                                url: "/api/specifications/Get?id=" + response.specificationValuesDtos[i].specificationID,
+                                method: "Get",
+                                async: false,
+                                success: function (response) {
+                                    //load all specification
+                                    var newLine = "<tr data-specification-id=" + response.specificationID + ">"
+                                        + "<td>" + response.name + "</td>"
+                                        + "<td><select class='form-control form-select'>";
+                                    for (var i = 0; i < response.values.length; i++) {
+                                        newLine += "<option value='" + response.values[i].value.toString() + "'>" + response.values[i].value + "</option>";
+                                    }
+
+                                    newLine += "</select></td>";
+
+                                    newLine += "<td><button type='button' class='btn-link js-delete'>Delete</button></td>";
+
+                                    $("#table-specifications tbody").append(newLine);
+
+
+                                },
+                            });
+
+                            //select value
+                            var select = $("#table-specifications tbody tr[data-specification-id='" + response.specificationValuesDtos[i].specificationID + "']");
+                            select.find(".form-select").val(response.specificationValuesDtos[i].value);
+                        }
+
+                        //Get image
+                        $("#avatar-preview").attr("src", "/api/AvatarOfProducts/Get?productID=" + response.productID);
+                    }
+                });
+            }
+
+            function UpdateProduct(status) {
+                validateProductForm();
+                if ($("#form-product").valid() == false)
+                    return;
+
+                var form = $("#form-product");
+                var items = form.serializeJSON();
+
+                var specificationValues = [];
+
+                $("#table-specifications tbody tr").each(function () {
+                    specificationValues.push({
+                        specificationID: Number($(this).attr("data-specification-id")),
+                        value: $(this).find(".form-select").val(),
+                    });
+                });
+                $.ajax({
+                    url: "/api/ProductForSellers/Update",
+                    method: "Put",
+                    data: {
+                        productID: @Model.ProductID,
+                        name: items.name,
+                        description: items.description,
+                        producerID: items.producer,
+                        categoryID: items.category,
+                        price: items.price,
+                        quantity: items.quantity,
+                        status: status,
+                        specificationValuesDtos: specificationValues,
+                    },
+                    success: function (response) {
+                        if (isImageChange) {
+                            var files = $("#select-image").get(0).files;
+                            var dataImage = new FormData;
+
+                            dataImage.append("imageFile", files[0]);
+                            dataImage.append("productID", response.productID);
+                            /*
+                            if (files.length > 0) {
+                                data = new FormData();
+                                for (i = 0; i < files.length; i++) {
+                                    data.append("file" + i, files[i]);
+                                }
+                            }
+                            */
+                            $.ajax({
+                                url: "/api/AvatarOfProducts/Update",
+                                method: "Put",
+                                data: dataImage,
+                                contentType: false,
+                                processData: false,
+                                async: false,
+                                success: function () {
+
+                                },
+                            });
+                        }
+
+                        bootbox.dialog({
+                            title: 'Successfully',
+                            message: "<p>This product has been saved sucessfully. What next</p>",
+                            buttons: {
+                                backToHomeSeller: {
+                                    label: "Back to management page",
+                                    className: 'btn-danger',
+                                    callback: function () {
+                                        window.location.href = '/Seller/Index?sellerID=' + @Model.SellerID;
+                                    }
+                                },
+                                continueModify: {
+                                    label: "Continue to modify",
+                                    className: 'btn-success',
+                                    callback: function () {
+                                    }
+                                },
+
+                            }
+                        });
+                    }
+                });
+            }
+            function DeleteProduct() {
+                $.ajax({ // delete product
+                    url: "/api/ProductForSellers/Delete?productID=" + @Model.ProductID,
+                    method: "Delete",
+                    success: function () {
+                        bootbox.alert({
+                            message: "Delete product sucessfully",
+                            callback: function () {
+                                window.location.href = '/Seller/Index?sellerID=' + @Model.SellerID;
+                            }
+                        });
+                    },
+                });
+            }
+        });
+
+        jQuery.fn.serializeJSON = function () {
+            var json = {};
+
+            jQuery.map(jQuery(this).serializeArray(), function (n) {
+                var _ = n.name.indexOf('[');
+
+                if (_ > -1) {
+                    var o = json,
+                        _name;
+
+                    _name = n.name.replace(/\]/gi, '').split('[');
+
+                    for (var i = 0, len = _name.length; i < len; i++) {
+                        if (i == len - 1) {
+                            if (o[_name[i]]) {
+                                if (typeof o[_name[i]] == 'string') {
+                                    o[_name[i]] = [o[_name[i]]];
+                                }
+
+                                o[_name[i]].push(n.value);
+                            } else {
+                                o[_name[i]] = n.value || '';
+                            }
+                        } else {
+                            o = o[_name[i]] = o[_name[i]] || {};
+                        }
+                    }
+                } else if (json[n.name] !== undefined) {
+                    if (!json[n.name].push) {
+                        json[n.name] = [json[n.name]];
+                    }
+
+                    json[n.name].push(n.value || '');
+                } else {
+                    json[n.name] = n.value || '';
+                }
+            });
+
+            return json;
+        };
+
+        function validateProductForm() {
+            if (isImageChange) {
+                $("#form-product").validate({
+                    rules: {
+                        name: {
+                            required: true,
+                            checkUniqueNameOfProduct: true,
+                            maxlength: 50,
+                        },
+                        image1: {
+                            required: true,
+                            checkAvatarOfProduct: true,
+                        },
+                        price: {
+                            required: true,
+                            min: 0,
+                            checkIntegerNumber: true,
+                        },
+                        quantity: {
+                            required: true,
+                            min: 0,
+                            checkIntegerNumber: true,
+                        }
+                    },
+                    messages: {
+                        name: {
+                            required: "Name is required !!!!",
+                        },
+                    },
+                });
+            } else {
+                $("#form-product").validate({
+                    rules: {
+                        name: {
+                            required: true,
+                            checkUniqueNameOfProduct: true,
+                            maxlength: 50,
+                        },
+                        price: {
+                            required: true,
+                            min: 0,
+                            checkIntegerNumber: true,
+                        },
+                        quantity: {
+                            required: true,
+                            min: 0,
+                            checkIntegerNumber: true,
+                        }
+                    },
+                    messages: {
+                        name: {
+                            required: "Name is required !!!!",
+                        },
+                    },
+                });
+            }
+        };
+
+        jQuery.validator.addMethod("checkUniqueNameOfProduct", function (value) {
+            var isValid = true;
+            $.ajax({
+                url: "/api/ProductForSellers/GetAll",
+                method: "Get",
+                async: false,
+                success: function (response) {
+                    for (var i = 0; i < response.length; i++) {
+                        if (response[i].name == value) {
+                            if (response[i].productID != @Model.ProductID) {
+                                isValid = false;
+                            }
+                        }
+                    }
+                }
+            });
+            return isValid;
+        }, "there're a name like this in our data, please try another name");
+
+        jQuery.validator.addMethod("checkAvatarOfProduct", function (value) {
+            var isValid = true;
+            if (value.split(".").slice(-1)[0] != "jpg")
+                isValid = false;
+            /*
+            var fileExtension = ['jpeg', 'jpg'];
+            if ($.inArray(value.val().split('.').pop().toLowerCase(), fileExtension) == -1) {
+                alert("Only formats are allowed : " + fileExtension.join(', '));
+                isValid = false;
+            }
+            */
+            return isValid;
+        }, "extension not valid, please select image of type jpg");
+
+        jQuery.validator.addMethod("checkIntegerNumber", function (value) {
+            var isValid = true;
+            if (!Number.isInteger(Number(value)))
+                isValid = false;
+
+            return isValid;
+        }, "invalid number, please type a integer number");
+
+    </script>
+
+</body>
+</html>

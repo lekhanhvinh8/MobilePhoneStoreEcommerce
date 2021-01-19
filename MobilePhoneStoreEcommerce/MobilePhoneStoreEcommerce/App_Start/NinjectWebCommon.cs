@@ -55,7 +55,7 @@ namespace MobilePhoneStoreEcommerce.App_Start
 
                 //Custom code
                 //Tell ninject to automatically scan this assembly, find all interfaces
-                //and their implementations and bind them
+                //and their implementations and bind them by name convention
                 kernel.Bind(x => {
                     x.FromThisAssembly()
                         .SelectAllClasses()

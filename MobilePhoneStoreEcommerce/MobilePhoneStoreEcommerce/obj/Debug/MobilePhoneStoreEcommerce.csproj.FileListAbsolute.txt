@@ -64,6 +64,8 @@ D:\HK1_2020-2021\E-Commerce\Đồ án\MobilePhoneStoreEcommerce\MobilePhoneStore
 D:\HK1_2020-2021\E-Commerce\Đồ án\MobilePhoneStoreEcommerce\MobilePhoneStoreEcommerce\bin\Ninject.Web.Common.WebHost.dll
 D:\HK1_2020-2021\E-Commerce\Đồ án\MobilePhoneStoreEcommerce\MobilePhoneStoreEcommerce\bin\Ninject.Web.Mvc.dll
 D:\HK1_2020-2021\E-Commerce\Đồ án\MobilePhoneStoreEcommerce\MobilePhoneStoreEcommerce\bin\Ninject.Web.WebApi.dll
+D:\HK1_2020-2021\E-Commerce\Đồ án\MobilePhoneStoreEcommerce\MobilePhoneStoreEcommerce\bin\PagedList.dll
+D:\HK1_2020-2021\E-Commerce\Đồ án\MobilePhoneStoreEcommerce\MobilePhoneStoreEcommerce\bin\PagedList.Mvc.dll
 D:\HK1_2020-2021\E-Commerce\Đồ án\MobilePhoneStoreEcommerce\MobilePhoneStoreEcommerce\bin\System.Net.Http.Formatting.dll
 D:\HK1_2020-2021\E-Commerce\Đồ án\MobilePhoneStoreEcommerce\MobilePhoneStoreEcommerce\bin\System.Web.Helpers.dll
 D:\HK1_2020-2021\E-Commerce\Đồ án\MobilePhoneStoreEcommerce\MobilePhoneStoreEcommerce\bin\System.Web.Http.dll
@@ -85,6 +87,8 @@ D:\HK1_2020-2021\E-Commerce\Đồ án\MobilePhoneStoreEcommerce\MobilePhoneStore
 D:\HK1_2020-2021\E-Commerce\Đồ án\MobilePhoneStoreEcommerce\MobilePhoneStoreEcommerce\bin\Ninject.Web.Common.WebHost.xml
 D:\HK1_2020-2021\E-Commerce\Đồ án\MobilePhoneStoreEcommerce\MobilePhoneStoreEcommerce\bin\Ninject.Web.Mvc.xml
 D:\HK1_2020-2021\E-Commerce\Đồ án\MobilePhoneStoreEcommerce\MobilePhoneStoreEcommerce\bin\Ninject.Web.WebApi.xml
+D:\HK1_2020-2021\E-Commerce\Đồ án\MobilePhoneStoreEcommerce\MobilePhoneStoreEcommerce\bin\PagedList.xml
+D:\HK1_2020-2021\E-Commerce\Đồ án\MobilePhoneStoreEcommerce\MobilePhoneStoreEcommerce\bin\PagedList.Mvc.xml
 D:\HK1_2020-2021\E-Commerce\Đồ án\MobilePhoneStoreEcommerce\MobilePhoneStoreEcommerce\bin\System.Web.Helpers.xml
 D:\HK1_2020-2021\E-Commerce\Đồ án\MobilePhoneStoreEcommerce\MobilePhoneStoreEcommerce\bin\System.Web.Mvc.xml
 D:\HK1_2020-2021\E-Commerce\Đồ án\MobilePhoneStoreEcommerce\MobilePhoneStoreEcommerce\bin\System.Web.Optimization.xml
@@ -104,8 +108,3 @@ D:\HK1_2020-2021\E-Commerce\Đồ án\MobilePhoneStoreEcommerce\MobilePhoneStore
 D:\HK1_2020-2021\E-Commerce\Đồ án\MobilePhoneStoreEcommerce\MobilePhoneStoreEcommerce\obj\Debug\MobilePhoneStoreEcommerce.csproj.CopyComplete
 D:\HK1_2020-2021\E-Commerce\Đồ án\MobilePhoneStoreEcommerce\MobilePhoneStoreEcommerce\obj\Debug\MobilePhoneStoreEcommerce.dll
 D:\HK1_2020-2021\E-Commerce\Đồ án\MobilePhoneStoreEcommerce\MobilePhoneStoreEcommerce\obj\Debug\MobilePhoneStoreEcommerce.pdb
-D:\HK1_2020-2021\E-Commerce\Đồ án\MobilePhoneStoreEcommerce\MobilePhoneStoreEcommerce\obj\Debug\MobilePhoneStoreEcommerce.csprojAssemblyReference.cache
-D:\HK1_2020-2021\E-Commerce\Đồ án\MobilePhoneStoreEcommerce\MobilePhoneStoreEcommerce\bin\PagedList.dll
-D:\HK1_2020-2021\E-Commerce\Đồ án\MobilePhoneStoreEcommerce\MobilePhoneStoreEcommerce\bin\PagedList.Mvc.dll
-D:\HK1_2020-2021\E-Commerce\Đồ án\MobilePhoneStoreEcommerce\MobilePhoneStoreEcommerce\bin\PagedList.xml
-D:\HK1_2020-2021\E-Commerce\Đồ án\MobilePhoneStoreEcommerce\MobilePhoneStoreEcommerce\bin\PagedList.Mvc.xml

@@ -184,6 +184,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\SellerController.cs" />
     <Compile Include="Controllers\HomeScreenController.cs" />
     <Compile Include="Core\Domain\Account.cs" />
     <Compile Include="Core\Domain\AvatarOfProduct.cs" />
@@ -230,6 +231,7 @@
     <Compile Include="Core\Repositories\IStarRatingRepository.cs" />
     <Compile Include="Core\Services\IProductManagement.cs" />
     <Compile Include="Core\ViewModels\LoginViewModel.cs" />
+    <Compile Include="Core\ViewModels\ProductForSellerViewModel.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -602,6 +604,9 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
+    <Content Include="Views\Seller\AddNewProduct.cshtml" />
+    <Content Include="Views\Seller\Index.cshtml" />
+    <Content Include="Views\Seller\UpdateProduct.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\Shared\MainLayout.cshtml" />

@@ -18,7 +18,7 @@ namespace MobilePhoneStoreEcommerce.Controllers
         // GET: HomeScreen
         public ActionResult Index(int page = 1, int pagesize = 10)
         {
-            var allProducts = new ProductModel().allProducts(page, pagesize);
+            var allProducts = new ProductModel().allAvailableProducts(page, pagesize);
             return View(allProducts);
         }
     }

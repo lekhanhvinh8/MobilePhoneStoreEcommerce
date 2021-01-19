@@ -27,7 +27,7 @@ namespace MobilePhoneStoreEcommerce.Persistence.Repositories
             product.Price = productForSellerDto.Price;
             product.Quantity = productForSellerDto.Quantity;
             product.Status = productForSellerDto.Status;
-
+            product.SellerID = productForSellerDto.SellerID;
             foreach (var specificationValueDto in productForSellerDto.SpecificationValuesDtos)
             {
                 var specificationValue = this.Context.Set<SpecificationValue>().SingleOrDefault(s => s.ProductSpecificationID == specificationValueDto.SpecificationID
