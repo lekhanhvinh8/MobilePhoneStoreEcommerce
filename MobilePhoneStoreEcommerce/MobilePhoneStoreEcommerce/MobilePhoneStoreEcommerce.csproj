@@ -222,6 +222,7 @@
     <Compile Include="Core\Repositories\IRoleRepository.cs" />
     <Compile Include="Core\Repositories\ISpecificationValueRepository.cs" />
     <Compile Include="Core\Repositories\IStarRatingRepository.cs" />
+    <Compile Include="Core\Services\IAccountAuthentication.cs" />
     <Compile Include="Core\Services\IProductManagement.cs" />
     <Compile Include="Core\ViewModels\LoginViewModel.cs" />
     <Compile Include="Core\ViewModels\ProductForSellerViewModel.cs" />
@@ -273,6 +274,7 @@
     <Compile Include="Persistence\Repositories\RoleRepository.cs" />
     <Compile Include="Persistence\Repositories\SpecificationValueRepository.cs" />
     <Compile Include="Persistence\Repositories\StarRatingRepository.cs" />
+    <Compile Include="Persistence\Services\AccountAuthentication.cs" />
     <Compile Include="Persistence\Services\ProductManagement.cs" />
     <Compile Include="Persistence\UnitOfWork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
