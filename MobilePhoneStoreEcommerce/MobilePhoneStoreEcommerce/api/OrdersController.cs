@@ -1,11 +1,13 @@
 ﻿using MobilePhoneStoreEcommerce.Core;
 using MobilePhoneStoreEcommerce.Core.Dtos;
+using MobilePhoneStoreEcommerce.Core.Services;
 using MobilePhoneStoreEcommerce.Persistence.Consts;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Core.Objects;
 using System.Linq;
 using System.Net;
+using System.Web;
 using System.Web.Http;
 
 namespace MobilePhoneStoreEcommerce.api
@@ -13,11 +15,30 @@ namespace MobilePhoneStoreEcommerce.api
     public class OrdersController : ApiController
     {
         private IUnitOfWork _unitOfWork;
+        private readonly IAccountAuthentication _accountAuthentication;
 
-        public OrdersController(IUnitOfWork unitOfWork)
+        public OrdersController(IUnitOfWork unitOfWork, IAccountAuthentication accountAuthentication)
         {
             this._unitOfWork = unitOfWork;
+            this._accountAuthentication = accountAuthentication;
         }
+
+        [HttpGet]
+        public List<OrderDto> GetAll(int sellerID, int status)
+        {
+            if (!IsSellerAuthorized(sellerID))
+                throw new HttpResponseException(HttpStatusCode.Unauthorized);
+
+            var orderDtos = new List<OrderDto>();
+
+            foreach (var order in this._unitOfWork.Orders.GetAllThenOrderByDate(sellerID, status))
+            {
+                orderDtos.Add(new OrderDto(order));
+            }
+
+            return orderDtos;
+        }
+
         [HttpGet]
         public List<OrderDto> GetListByStatus(int status)
         {
@@ -122,6 +143,27 @@ namespace MobilePhoneStoreEcommerce.api
 
             if (!(bool)isSuccess.Value)
                 throw new Exception("Failure deleting an order");
+        }
+
+
+        private bool IsSellerAuthorized(int sellerID)
+        {
+            var sessionSellerID = HttpContext.Current.Session[SessionNames.SellerID];
+
+            if (!this._accountAuthentication.IsAuthentic(sellerID, sessionSellerID))
+                return false;
+
+            return true;
+        }
+
+        private bool IsCustomerAuthorized(int customerID)
+        {
+            var sessionCustomerID = HttpContext.Current.Session[SessionNames.CustomerID];
+
+            if (!this._accountAuthentication.IsAuthentic(customerID, sessionCustomerID))
+                return false;
+
+            return true;
         }
     }
 }

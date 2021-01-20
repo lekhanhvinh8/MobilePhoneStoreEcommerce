@@ -8,7 +8,8 @@ namespace MobilePhoneStoreEcommerce.Core.Services
 {
     public interface IAccountAuthentication
     {
+        bool IsAuthentic(object sessionAccountID);
         bool IsAuthentic(int accountID, object sessionAccountID);
-        bool IsAuthorized(int accountID, int roleID);
+        //bool IsAuthorized(int accountID, int roleID);
     }
 }

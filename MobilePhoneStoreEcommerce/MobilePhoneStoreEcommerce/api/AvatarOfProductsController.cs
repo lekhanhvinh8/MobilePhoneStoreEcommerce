@@ -1,5 +1,7 @@
 ﻿using MobilePhoneStoreEcommerce.Core;
 using MobilePhoneStoreEcommerce.Core.Domain;
+using MobilePhoneStoreEcommerce.Core.Services;
+using MobilePhoneStoreEcommerce.Persistence.Consts;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -11,9 +13,11 @@ namespace MobilePhoneStoreEcommerce.api
     public class AvatarOfProductsController : ApiController
     {
         private IUnitOfWork _unitOfWork;
-        public AvatarOfProductsController(IUnitOfWork unitOfWork)
+        private IAccountAuthentication _accountAuthentication;
+        public AvatarOfProductsController(IUnitOfWork unitOfWork, IAccountAuthentication accountAuthentication)
         {
             this._unitOfWork = unitOfWork;
+            this._accountAuthentication = accountAuthentication;
         }
 
         [HttpGet]
@@ -23,6 +27,8 @@ namespace MobilePhoneStoreEcommerce.api
 
             if (avatarOfProduct == null)
                 throw new HttpResponseException(System.Net.HttpStatusCode.NotFound);
+
+            this._unitOfWork.Products.Load(p => p.ID == avatarOfProduct.ProductID);
 
             return GetResponseMessage(avatarOfProduct);
         }
@@ -35,6 +41,11 @@ namespace MobilePhoneStoreEcommerce.api
             if (avatarOfProduct == null)
                 throw new HttpResponseException(System.Net.HttpStatusCode.NotFound);
 
+            this._unitOfWork.Products.Load(p => p.ID == avatarOfProduct.ProductID);
+
+            if (!IsAuthorized(avatarOfProduct.Product.SellerID))
+                throw new HttpResponseException(HttpStatusCode.Unauthorized);
+
             return avatarOfProduct.Avatar;
         }
 
@@ -43,7 +54,7 @@ namespace MobilePhoneStoreEcommerce.api
         {
             var httpPostedFile = HttpContext.Current.Request.Files["imageFile"];
             var productID = HttpContext.Current.Request.Form[0];
-            
+
             BinaryReader reader = new BinaryReader(httpPostedFile.InputStream);
 
             var image = reader.ReadBytes(httpPostedFile.ContentLength);
@@ -51,6 +62,13 @@ namespace MobilePhoneStoreEcommerce.api
             var avatarOfProduct = new AvatarOfProduct();
             avatarOfProduct.ProductID = int.Parse(productID);
             avatarOfProduct.Avatar = image;
+
+            var product = this._unitOfWork.Products.Get(avatarOfProduct.ProductID);
+            if (product == null)
+                throw new HttpResponseException(HttpStatusCode.NotFound);
+
+            if (!IsAuthorized(product.SellerID))
+                throw new HttpResponseException(HttpStatusCode.NotFound);
 
             this._unitOfWork.AvatarOfProducts.Add(avatarOfProduct);
             this._unitOfWork.Complete();
@@ -72,6 +90,11 @@ namespace MobilePhoneStoreEcommerce.api
             if (avatarOfProductInDb == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
 
+            this._unitOfWork.Products.Load(p => p.ID == avatarOfProductInDb.ProductID);
+
+            if (!IsAuthorized(avatarOfProductInDb.Product.SellerID))
+                throw new HttpResponseException(HttpStatusCode.Unauthorized);
+
             avatarOfProductInDb.Avatar = image;
             this._unitOfWork.Complete();
 
@@ -85,6 +108,11 @@ namespace MobilePhoneStoreEcommerce.api
 
             if (avatarOfProduct == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
+
+            this._unitOfWork.Products.Load(p => p.ID == avatarOfProduct.ProductID);
+
+            if (!IsAuthorized(avatarOfProduct.Product.SellerID))
+                throw new HttpResponseException(HttpStatusCode.Unauthorized);
 
             this._unitOfWork.AvatarOfProducts.Remove(avatarOfProduct);
             this._unitOfWork.Complete();
@@ -103,6 +131,16 @@ namespace MobilePhoneStoreEcommerce.api
             response.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/jpeg");
 
             return response;
+        }
+
+        private bool IsAuthorized(int sellerID)
+        {
+            var sessionSellerID = HttpContext.Current.Session[SessionNames.SellerID];
+
+            if (!this._accountAuthentication.IsAuthentic(sellerID, sessionSellerID))
+                return false;
+
+            return true;
         }
     }
 }

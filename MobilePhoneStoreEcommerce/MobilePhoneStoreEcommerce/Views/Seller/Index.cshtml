@@ -92,7 +92,7 @@
 
             var tableProducts = $("#table-products").DataTable({
                 ajax: {
-                    url: "/api/ProductForSellers/GetAll",
+                    url: "/api/ProductForSellers/GetAll?sellerID=" + @Model.SellerID,
                     dataSrc: "",
                 },
                 "sScrollY": "355",
@@ -185,7 +185,7 @@
 
             var tableOrders = $("#table-orders").DataTable({
                 ajax: {
-                    url: "/api/Orders/GetListByStatus?status=" + @OrderStates.Pending,
+                    url: "/api/Orders/GetAll?sellerID=" + @Model.SellerID + "&status=" + @OrderStates.Pending,
                     dataSrc: "",
                 },
                 "sScrollY": "355",
@@ -234,6 +234,9 @@
                         }
                     }
                 ],
+                searching: false,
+                info: false,
+                ordering: false,
 
             });
 

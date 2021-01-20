@@ -1,10 +1,13 @@
 ﻿using MobilePhoneStoreEcommerce.Core;
 using MobilePhoneStoreEcommerce.Core.Domain;
 using MobilePhoneStoreEcommerce.Core.Dtos;
+using MobilePhoneStoreEcommerce.Core.Services;
 using MobilePhoneStoreEcommerce.Persistence;
+using MobilePhoneStoreEcommerce.Persistence.Consts;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Web;
 using System.Web.Http;
 
 namespace MobilePhoneStoreEcommerce.api
@@ -12,9 +15,11 @@ namespace MobilePhoneStoreEcommerce.api
     public class CategoriesController : ApiController
     {
         private readonly IUnitOfWork _unitOfWork;
-        public CategoriesController(IUnitOfWork unitOfWork)
+        private readonly IAccountAuthentication _accountAuthentication;
+        public CategoriesController(IUnitOfWork unitOfWork, IAccountAuthentication accountAuthentication)
         {
             this._unitOfWork = unitOfWork;
+            this._accountAuthentication = accountAuthentication;
         }
 
         public List<CategoryDto> GetAll()
@@ -43,6 +48,9 @@ namespace MobilePhoneStoreEcommerce.api
         [HttpPost]
         public CategoryDto Create(CategoryDto categoryDto)
         {
+            if (!IsAuthorized())
+                throw new HttpResponseException(HttpStatusCode.Unauthorized);
+
             var category = categoryDto.CreateModel();
 
             this._unitOfWork.Categories.Add(category);
@@ -54,6 +62,9 @@ namespace MobilePhoneStoreEcommerce.api
         [HttpPut]
         public CategoryDto Update(CategoryDto categoryDto)
         {
+            if (!IsAuthorized())
+                throw new HttpResponseException(HttpStatusCode.Unauthorized);
+
             var categoryInDb = this._unitOfWork.Categories.Get(categoryDto.CategoryID);
 
             if(categoryInDb == null)
@@ -71,6 +82,9 @@ namespace MobilePhoneStoreEcommerce.api
         [HttpDelete]
         public void Delete(int id)
         {
+            if (!IsAuthorized())
+                throw new HttpResponseException(HttpStatusCode.Unauthorized);
+
             var categoryInDb = this._unitOfWork.Categories.Get(id);
 
             if (categoryInDb == null)
@@ -78,6 +92,16 @@ namespace MobilePhoneStoreEcommerce.api
 
             this._unitOfWork.Categories.Remove(categoryInDb);
             this._unitOfWork.Complete();
+        }
+
+        private bool IsAuthorized()
+        {
+            var sessionAdminID = HttpContext.Current.Session[SessionNames.AdminID];
+
+            if (!this._accountAuthentication.IsAuthentic(sessionAdminID))
+                return false;
+
+            return true;
         }
     }
 }

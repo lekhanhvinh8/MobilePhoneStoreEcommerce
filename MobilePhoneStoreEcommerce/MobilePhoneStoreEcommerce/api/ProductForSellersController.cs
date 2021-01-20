@@ -8,22 +8,29 @@ using System.IO;
 using Newtonsoft.Json;
 using MobilePhoneStoreEcommerce.Core;
 using MobilePhoneStoreEcommerce.Core.Dtos;
+using MobilePhoneStoreEcommerce.Core.Services;
+using MobilePhoneStoreEcommerce.Persistence.Consts;
 
 namespace MobilePhoneStoreEcommerce.api
 {
     public class ProductForSellersController : ApiController
     {
         private IUnitOfWork _unitOfWork;
-        public ProductForSellersController(IUnitOfWork unitOfWork)
+        private IAccountAuthentication _accountAuthentication;
+        public ProductForSellersController(IUnitOfWork unitOfWork, IAccountAuthentication accountAuthentication)
         {
             this._unitOfWork = unitOfWork;
+            this._accountAuthentication = accountAuthentication;
         }
 
-        public List<ProductForSellerDto> GetAll()
+        public List<ProductForSellerDto> GetAll(int sellerID)
         {
+            if (!IsAuthorized(sellerID))
+                throw new HttpResponseException(HttpStatusCode.Unauthorized);
+
             var productForSellersDto = new List<ProductForSellerDto>();
 
-            foreach (var product in this._unitOfWork.Products.GetAll())
+            foreach (var product in this._unitOfWork.Products.Find(p => p.SellerID == sellerID))
             {
                 //Load related objects
                 this._unitOfWork.Categories.Load(c => c.ID == product.CategoryID);
@@ -42,6 +49,9 @@ namespace MobilePhoneStoreEcommerce.api
             if (product == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
 
+            if (!IsAuthorized(product.SellerID))
+                throw new HttpResponseException(HttpStatusCode.Unauthorized);
+
             return new ProductForSellerDto(product);
         }
 
@@ -52,6 +62,9 @@ namespace MobilePhoneStoreEcommerce.api
 
             if (product == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
+
+            if (!IsAuthorized(product.SellerID))
+                throw new HttpResponseException(HttpStatusCode.Unauthorized);
 
             product.Status = status;
             this._unitOfWork.Complete();
@@ -82,6 +95,9 @@ namespace MobilePhoneStoreEcommerce.api
             BinaryReader reader = new BinaryReader(httpPostedFile.InputStream);
             var imageFile = reader.ReadBytes(httpPostedFile.ContentLength);
 
+            if (!IsAuthorized(productForSellerDto.SellerID))
+                throw new HttpResponseException(HttpStatusCode.Unauthorized);
+
             this._unitOfWork.Products.Create(productForSellerDto, imageFile);
             this._unitOfWork.Complete();
 
@@ -102,6 +118,9 @@ namespace MobilePhoneStoreEcommerce.api
 
             if (product == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
+
+            if (!IsAuthorized(product.SellerID))
+                throw new HttpResponseException(HttpStatusCode.Unauthorized);
 
             productForSellerDto.UpdateModel(product);
 
@@ -136,6 +155,9 @@ namespace MobilePhoneStoreEcommerce.api
             if (product == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
 
+            if (!IsAuthorized(product.SellerID))
+                throw new HttpResponseException(HttpStatusCode.Unauthorized);
+
             var productDto = new ProductForSellerDto(product);
 
             product.SpecificationValues.Clear();
@@ -145,6 +167,39 @@ namespace MobilePhoneStoreEcommerce.api
             this._unitOfWork.Complete();
 
             return productDto;
+        }
+        [HttpGet]
+        public bool IsExist(string productName)
+        {
+            var product = this._unitOfWork.Products.SingleOrDefault(p => p.Name == productName);
+
+            if (product == null)
+                return false;
+
+            return true;
+        }
+        [HttpGet]
+        public bool IsExistExcept(string productName, int productID)
+        {
+            var product = this._unitOfWork.Products.SingleOrDefault(p => p.Name == productName);
+
+            if (product == null)
+                return false;
+
+            if (product.ID == productID)
+                return false;
+
+            return true;
+        }
+        
+        private bool IsAuthorized(int sellerID)
+        {
+            var sessionSellerID = HttpContext.Current.Session[SessionNames.SellerID];
+
+            if (!this._accountAuthentication.IsAuthentic(sellerID, sessionSellerID))
+                return false;
+
+            return true;
         }
     }
 }

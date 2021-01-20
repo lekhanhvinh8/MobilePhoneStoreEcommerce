@@ -1,4 +1,5 @@
 ﻿@model MobilePhoneStoreEcommerce.Core.Dtos.RegisterDto
+@using MobilePhoneStoreEcommerce.Persistence.Consts
 @{
 	Layout = null;
 }
@@ -56,11 +57,11 @@
 									</div>
 									<div style="display: flex;">
 										<div>
-											@Html.RadioButtonFor(m => m.AccountType, "2")
+											@Html.RadioButtonFor(m => m.AccountType, RoleIds.Seller.ToString())
 											@Html.Label("Seller")
 										</div>
 										<div style="margin-left: 4rem;">
-											@Html.RadioButtonFor(m => m.AccountType, "3")
+											@Html.RadioButtonFor(m => m.AccountType, RoleIds.Customer.ToString())
 											@Html.Label("Customer")
 
 										</div>

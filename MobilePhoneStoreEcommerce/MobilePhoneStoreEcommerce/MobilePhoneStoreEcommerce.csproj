@@ -240,6 +240,14 @@
     <Compile Include="Migrations\202101180616515_InitialModel.designer.cs">
       <DependentUpon>202101180616515_InitialModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202101200625458_AddSellerIDPropToOrdersTable.cs" />
+    <Compile Include="Migrations\202101200625458_AddSellerIDPropToOrdersTable.designer.cs">
+      <DependentUpon>202101200625458_AddSellerIDPropToOrdersTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202101200652480_ModifyOrderTableConstraintUniqueSellerIDCustomerIDOrderTime.cs" />
+    <Compile Include="Migrations\202101200652480_ModifyOrderTableConstraintUniqueSellerIDCustomerIDOrderTime.designer.cs">
+      <DependentUpon>202101200652480_ModifyOrderTableConstraintUniqueSellerIDCustomerIDOrderTime.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ControllerModels\AccountModels.cs" />
     <Compile Include="Models\ControllerModels\ProductModel.cs" />
@@ -633,6 +641,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202101180616515_InitialModel.resx">
       <DependentUpon>202101180616515_InitialModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202101200625458_AddSellerIDPropToOrdersTable.resx">
+      <DependentUpon>202101200625458_AddSellerIDPropToOrdersTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202101200652480_ModifyOrderTableConstraintUniqueSellerIDCustomerIDOrderTime.resx">
+      <DependentUpon>202101200652480_ModifyOrderTableConstraintUniqueSellerIDCustomerIDOrderTime.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

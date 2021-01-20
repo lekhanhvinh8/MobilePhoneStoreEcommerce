@@ -395,15 +395,12 @@
         jQuery.validator.addMethod("checkUniqueNameOfProduct", function (value) {
             var isValid = true;
             $.ajax({
-                url: "/api/ProductForSellers/GetAll",
+                url: "/api/ProductForSellers/IsExist?productName=" + value,
                 method: "Get",
                 async: false,
                 success: function (response) {
-                    for (var i = 0; i < response.length; i++) {
-                        if (response[i].name == value) {
-                            isValid = false;
-                        }
-                    }
+                    if (response == true)
+                        isValid = false;
                 }
             });
             return isValid;

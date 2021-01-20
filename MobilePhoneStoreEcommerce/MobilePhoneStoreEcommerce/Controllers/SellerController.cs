@@ -61,7 +61,7 @@ namespace MobilePhoneStoreEcommerce.Controllers
         private bool IsAuthorized(int sellerID)
         {
             var session = Session[SessionNames.SellerID];
-            if (!this._accountAuthentication.IsAuthentic(sellerID, session) || !this._accountAuthentication.IsAuthorized(sellerID, RoleIds.Seller))
+            if (!this._accountAuthentication.IsAuthentic(sellerID, session))
                 return false;
 
             return true;

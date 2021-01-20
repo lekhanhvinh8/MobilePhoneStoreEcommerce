@@ -9,5 +9,6 @@ namespace MobilePhoneStoreEcommerce.Core.Repositories
 {
     public interface IOrderRepository : IRepository<Order>
     {
+        IEnumerable<Order> GetAllThenOrderByDate(int sellerID, int status);
     }
 }
