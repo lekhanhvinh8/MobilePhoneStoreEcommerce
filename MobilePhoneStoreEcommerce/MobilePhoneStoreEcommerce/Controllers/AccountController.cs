@@ -26,7 +26,6 @@ namespace MobilePhoneStoreEcommerce.Controllers
         public ActionResult Login(int roleID = RoleIds.Unknown)
         {
             var loginViewModel = new LoginViewModel() { AccountDto = new AccountDto(), RoleID = roleID };
-
             return View(loginViewModel);
         }
 
@@ -59,7 +58,7 @@ namespace MobilePhoneStoreEcommerce.Controllers
             else if (result == RoleIds.Seller)
             {
                 Session[SessionNames.SellerID] = accInDb.ID;
-                return RedirectToAction("Index", "Seller");
+                return RedirectToAction("Index", "Seller", new { sellerID = Session[SessionNames.SellerID] });
             }
             else if (result == RoleIds.Customer)
             {
@@ -129,7 +128,7 @@ namespace MobilePhoneStoreEcommerce.Controllers
                 {
                     if(accType == RoleIds.Seller)
                     {
-                        if (new AccountModels().AddCustomer(newAcc.ID, name, phone, email, address))
+                        if (new AccountModels().AddSeller(newAcc.ID, name, phone, email, address))
                         {
                         }
                     }
@@ -195,7 +194,7 @@ namespace MobilePhoneStoreEcommerce.Controllers
             Session.Abandon();
             Session.RemoveAll();
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "HomeScreen");
         }
     }
 }

@@ -1,0 +1,47 @@
+﻿@model PagedList.IPagedList<MobilePhoneStoreEcommerce.Core.Domain.Product>
+@using PagedList.Mvc;
+@{
+	ViewBag.Title = "Index";
+	Layout = "~/Views/Shared/MainLayout.cshtml";
+}
+
+<div class="wrap">
+	<div class="image-slider">
+		<!-- Slideshow 1 -->
+		<ul class="rslides" id="slider1">
+			<li><img src="~/Assets/images/1.png"></li>
+			<li><img src="~/Assets/images/2.png"></li>
+			<li><img src="~/Assets/images/3.jpg"></li>
+		</ul>
+	</div>
+	<!--End-image-slider---->
+	<div class="content">
+		<div class="content-grids" style="width: 1380px;">
+			<div class="h4">
+				<h4>Products are available at the store</h4>
+			</div>
+			<div class="section group">
+				@foreach (var items in Model)
+				{
+					<div class="grid_1_of_4 images_1_of_4 products-info">
+						<a href="@Url.Action("Details", "HomeScreen", new { id = items.ID })">
+							<img src="/api/AvatarOfProducts/Get?ProductId= @items.ID" style="height: 282px; object-fit: cover;" />
+							@items.Name
+						</a>
+						<h3 class="shopp-price">@items.Price &nbsp;đ</h3>
+						<ul>
+							<li><a class="cart" href="/ShoppingCart/AddtoCart/@items.ID"> </a></li>
+							<li><a class="i" href="@Url.Action("Details", "HomeScreen", new { id = items.ID })"> </a></li>
+						</ul>
+					</div>
+				}
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div style="margin:1rem 3rem 1rem 1rem; float:right">
+	@Html.PagedListPager(Model, Page => Url.Action("Index", new { Page }))
+
+</div>
