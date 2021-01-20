@@ -2,6 +2,7 @@
 using MobilePhoneStoreEcommerce.Core.Dtos;
 using MobilePhoneStoreEcommerce.Core.ViewModels;
 using MobilePhoneStoreEcommerce.Models.ControllerModels;
+using MobilePhoneStoreEcommerce.Models.ViewModels;
 using MobilePhoneStoreEcommerce.Persistence;
 using MobilePhoneStoreEcommerce.Persistence.Consts;
 using System;
@@ -63,7 +64,7 @@ namespace MobilePhoneStoreEcommerce.Controllers
             else if (result == RoleIds.Customer)
             {
                 Session[SessionNames.CustomerID] = accInDb.ID;
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "HomeScreen");
             }
 
             return View(loginViewModel);
@@ -75,6 +76,7 @@ namespace MobilePhoneStoreEcommerce.Controllers
             var registerDto = new RegisterDto();
             return View(registerDto);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Register(RegisterDto registerDto)
@@ -84,7 +86,7 @@ namespace MobilePhoneStoreEcommerce.Controllers
 
             var subject = "Welcome to our website!";
             var code = new AccountModels().RandomString(10);
-            var content = "Your account has is successfully created. You need to confirm your email. Your password is: " + code;
+            var content = "Hi " + registerDto.Name + "!. Your account has is successfully created. You need to confirm your email. Your password is: " + code;
 
             var result = Register(registerDto.AccountType, registerDto.Name, registerDto.PhoneNumber, registerDto.Email, registerDto.Username, registerDto.Address, code);
             if (result)
@@ -130,12 +132,22 @@ namespace MobilePhoneStoreEcommerce.Controllers
                     {
                         if (new AccountModels().AddSeller(newAcc.ID, name, phone, email, address))
                         {
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
                         }
                     }
                     else if(accType == RoleIds.Customer)
                     {
                         if (new AccountModels().AddCustomer(newAcc.ID, name, phone, email, address))
                         {
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
                         }
                     }
                 }
@@ -195,6 +207,94 @@ namespace MobilePhoneStoreEcommerce.Controllers
             Session.RemoveAll();
 
             return RedirectToAction("Index", "HomeScreen");
+        }
+
+        public ActionResult ChangePassword(int ID)
+        {
+            var changePasswordViewModel = new ChangePasswordViewModels()
+            {
+                sellerId = ID
+            };
+            return View(changePasswordViewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ChangePassword(ChangePasswordViewModels changePasswordViewModels)
+        {
+            if(ModelState.IsValid)
+            {
+                var acc = _context.Accounts.SingleOrDefault(s => s.ID == changePasswordViewModels.sellerId);
+                if (acc != null)
+                {
+                    string pwd = AccountModels.Encrypt(changePasswordViewModels.OldPassword, true);
+                    if (pwd == acc.PasswordHash)
+                    {
+                        acc.PasswordHash = AccountModels.Encrypt(changePasswordViewModels.NewPassword, true);
+                        if (new AccountModels().UpdatePassword(acc)) { }
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("OldPassword", "Old Password is not correct.");
+                    }
+                }
+            }
+            return View(changePasswordViewModels);
+        }
+
+        public ActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult ForgotPassword(ForgotPasswordViewModels forgotPasswordViewModels)
+        {
+            if (!ModelState.IsValid)
+                return View(forgotPasswordViewModels);
+
+            var newPass = new AccountModels().RandomString(10);
+            string pwd = AccountModels.Encrypt(newPass, true);
+            var subject = "Reset Password";
+            var content = "Your new password is: " + newPass;
+
+            if (forgotPasswordViewModels.AccountType == RoleIds.Customer)
+            {
+                var findMail = _context.Cutomers.SingleOrDefault(e => e.Email == forgotPasswordViewModels.Email);
+                if (findMail == null)
+                {
+                    ModelState.AddModelError("Email", "Email account does not coincide with registration!");
+                }
+                else
+                {
+                    findMail.Account.PasswordHash = pwd;
+                    if (new AccountModels().UpdatePassword(findMail.Account))
+                    {
+                        var sendMail = SendMail(forgotPasswordViewModels.Email, subject, content);
+                        ViewBag.Success = true;
+                        return View(forgotPasswordViewModels);
+                    }
+                }
+            }
+            else if (forgotPasswordViewModels.AccountType == RoleIds.Seller)
+            {
+                var findMail = _context.Sellers.SingleOrDefault(e => e.Email == forgotPasswordViewModels.Email);
+                if (findMail == null)
+                {
+                    ModelState.AddModelError("Email", "Email account does not coincide with registration!");
+                }
+                else
+                {
+                    findMail.Account.PasswordHash = pwd;
+                    if (new AccountModels().UpdatePassword(findMail.Account))
+                    {
+                        var sendMail = SendMail(forgotPasswordViewModels.Email, subject, content);
+                        ViewBag.Success = true;
+                        return View(forgotPasswordViewModels);
+                    }
+                }
+            }
+            return View(forgotPasswordViewModels);
         }
     }
 }

@@ -23,11 +23,10 @@
                     <div class="nav navbar-nav navbar-right">
                         <img src="~/Content/resources/images/adminIcon.png" style="height: 50px;" />
 						<ul class="nav navbar-nav navbar-right">
-							@*<li>@Html.ActionLink("Log out", "Logout", "Account", routeValues: new { sessionName = SessionNames.SellerID }, htmlAttributes: new { id = "logoutLink" })</li>*@
 							<li class="dropdown">
 								<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Account Name<span class="caret"></span></a>
 								<ul class="dropdown-menu">
-                                    <li>@Html.ActionLink("Change Password", "ChangePass", "Account")</li>
+                                    <li>@Html.ActionLink("Change Password", "ChangePassword", "Account", routeValues: new { ID = Model.SellerID }, htmlAttributes: new { id = "changPassLink" })</li>
 									<li>@Html.ActionLink("Log out", "Logout", "Account", routeValues: new { sessionName = SessionNames.SellerID }, htmlAttributes: new { id = "logoutLink" })</li>
 								</ul>
 							</li>

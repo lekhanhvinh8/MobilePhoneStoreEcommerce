@@ -5,6 +5,17 @@
 	Layout = "~/Views/Shared/MainLayout.cshtml";
 }
 
+<script>
+	// You can also use "$(window).load(function() {"
+	$(function () {
+		// Slideshow 1
+		$("#slider1").responsiveSlides({
+			maxwidth: 1600,
+			speed: 600
+		});
+	});
+</script>
+
 <div class="wrap">
 	<div class="image-slider">
 		<!-- Slideshow 1 -->
@@ -38,10 +49,10 @@
 			</div>
 		</div>
 	</div>
+	<div style="margin-left: 1rem;">
+		@Html.PagedListPager(Model, Page => Url.Action("Index", new { Page }))
+	</div>
 </div>
 
 
-<div style="margin:1rem 3rem 1rem 1rem; float:right">
-	@Html.PagedListPager(Model, Page => Url.Action("Index", new { Page }))
 
-</div>
