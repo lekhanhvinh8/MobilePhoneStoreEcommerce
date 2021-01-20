@@ -1,0 +1,123 @@
+﻿@model MobilePhoneStoreEcommerce.Core.Dtos.InfoDto
+@{
+    ViewBag.Title = "Info";
+    Layout = "~/Views/Shared/MainLayout.cshtml";
+}
+
+@{ 
+	var action = "";
+	if (ViewBag.Info == "Customer")
+	{
+		action = "Info";
+	}
+	else
+	{
+		action = "SellerInfo";
+	}
+}
+<link href="~/Content/sb-admin-2.css" rel="stylesheet">
+
+<div class="container" style="padding-top: 1rem;">
+	<div class="row flex-lg-nowrap">
+		<div class="col">
+			<div class="row">
+				<div class="col mb-3">
+					<div class="card">
+						<div class="card-body">
+							<div class="e-profile">
+								<div class="row">
+									<div class="col-12 col-sm-auto mb-3">
+										<div class="mx-auto" style="width: 140px;">
+											<div class="d-flex justify-content-center align-items-center rounded" style="height: 140px; background-color: rgb(233, 236, 239);">
+												<span style="color: rgb(166, 168, 170); font: bold 8pt Arial;">
+													<img src="~/Content/resources/images/adminIcon.png" alt="140x140" title="Đổi Avatar" id="avatar_img" style="width: 130px; height: 130px; object-fit: cover;" />
+												</span>
+											</div>
+										</div>
+									</div>
+									<div class="col d-flex flex-column flex-sm-row justify-content-between mb-3">
+										<div class="text-center text-sm-left mb-2 mb-sm-0">
+											<h4 class="pt-sm-2 pb-1 mb-0 text-nowrap">@Model.Name </h4>
+											<div class="text-muted"><small>Last seen 2 hours ago</small></div>
+											<div class="mt-2">
+
+												<a class="btn btn-primary" id="avatar" href="#">
+													<i class="fa fa-fw fa-camera"></i>
+													<span>Change Photo</span>
+												</a>
+											</div>
+										</div>
+										<div class="text-center text-sm-right">
+											<span class="badge badge-secondary">Profile</span>
+											<div class="text-muted"><small>Joined DataTime</small></div>
+										</div>
+									</div>
+								</div>
+								<ul class="nav nav-tabs">
+									<li class="nav-item"><a href="" class="active nav-link">Information</a></li>
+								</ul>
+								<div class="tab-content pt-3">
+									<div class="tab-pane active">
+										@using (Html.BeginForm(action, "Customer", FormMethod.Post))
+										{
+											@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+											<div class="row">
+												<div class="col">
+													<div class="row">
+														<div class="col">
+															@Html.HiddenFor(Model => Model.CustomerId)
+															<div class="form-group">
+																<label>Full Name</label>
+																@Html.TextBoxFor(Model => Model.Name, new { @class = "form-control" })
+																@Html.ValidationMessageFor(Model => Model.Name, "", new { @class = "text-danger" })
+															</div>
+														</div>
+													</div>
+													<div class="row">
+														<div class="col">
+															<div class="form-group">
+																<label>Email</label>
+																@Html.TextBoxFor(Model => Model.Email, new { @class = "form-control" })
+																@Html.ValidationMessageFor(Model => Model.Email, "", new { @class = "text-danger" })
+															</div>
+														</div>
+													</div>
+													<div class="row">
+														<div class="col">
+															<div class="form-group">
+																<label>Phone Number</label>
+																@Html.TextBoxFor(Model => Model.PhoneNumber, new { @class = "form-control" })
+																@Html.ValidationMessageFor(Model => Model.PhoneNumber, "", new { @class = "text-danger" })
+															</div>
+														</div>
+													</div>
+													<div class="row">
+														<div class="col mb-3">
+															<div class="form-group">
+																<label>Address</label>
+																@Html.TextAreaFor(Model => Model.Address, new { @class = "form-control" })
+																@Html.ValidationMessageFor(Model => Model.Address, "", new { @class = "text-danger" })
+															</div>
+														</div>
+													</div>
+													<div class="row">
+													</div>
+													<div class="row">
+														<div class="col d-flex justify-content-end">
+															<button class="btn btn-success" type="submit">Save Changes</button>
+														</div>
+													</div>
+												</div>
+											</div>
+										}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+

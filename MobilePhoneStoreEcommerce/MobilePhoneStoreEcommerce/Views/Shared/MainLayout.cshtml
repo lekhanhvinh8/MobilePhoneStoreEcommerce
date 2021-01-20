@@ -46,7 +46,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 					else if (Session[SessionNames.CustomerID] != null)
 					{
 						<li><a href="@Url.Action("Index", "Seller", new { sellerID = RoleIds.Seller})">Seller</a></li>
-						<li><a href="@Url.Action("Index", "Customer", new { customerID = Session[SessionNames.CustomerID]})">MyAccount</a></li>
+						<li><a href="@Url.Action("Info", "Customer", new { customerID = Session[SessionNames.CustomerID]})">MyAccount</a></li>
 						<li><a href="@Url.Action("Logout", "Account", routeValues: new { sessionName = SessionNames.CustomerID })">Logout</a></li>
 					}
 					<li>
