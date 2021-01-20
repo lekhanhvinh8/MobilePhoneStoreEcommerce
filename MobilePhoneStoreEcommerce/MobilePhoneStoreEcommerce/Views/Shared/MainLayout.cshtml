@@ -17,17 +17,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	<link rel="stylesheet" href="~/Assets/css/responsiveslides.css">
 	<script src="~/Assets/js/jquery.min.js"></script>
 	<script src="~/Assets/js/responsiveslides.min.js"></script>
-	<script>
-		// You can also use "$(window).load(function() {"
-		$(function () {
 
-			// Slideshow 1
-			$("#slider1").responsiveSlides({
-				maxwidth: 1600,
-				speed: 600
-			});
-		});
-	</script>
 </head>
 <body>
 	<div class="wrap">
@@ -42,17 +32,22 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 			<div class="clear"> </div>
 			<div class="header-top-nav">
 				<ul>
-					@if (Session[SessionNames.CustomerID] == null)
+					@if (Session[SessionNames.CustomerID] == null && Session[SessionNames.SellerID] == null)
 					{
+						<li><a href="@Url.Action("Index", "Seller", new { sellerID = RoleIds.Seller})">Seller</a></li>
 						<li><a href="@Url.Action("Register", "Account")">Register</a></li>
 						<li><a href="@Url.Action("Login", "Account")">Login</a></li>
-
 					}
-					else
+					else if (Session[SessionNames.SellerID] != null)
 					{
+						<li><a href="@Url.Action("Index", "Seller", new { sellerID = Session[SessionNames.SellerID]})">MyAccount</a></li>
+						<li><a href="@Url.Action("Logout", "Account", routeValues: new { sessionName = SessionNames.SellerID })">Logout</a></li>
+					}
+					else if (Session[SessionNames.CustomerID] != null)
+					{
+						<li><a href="@Url.Action("Index", "Seller", new { sellerID = RoleIds.Seller})">Seller</a></li>
 						<li><a href="@Url.Action("Index", "Customer", new { customerID = Session[SessionNames.CustomerID]})">MyAccount</a></li>
-						<li><a href="@Url.Action("Logout", "HomeScreen")">Logout</a></li>
-
+						<li><a href="@Url.Action("Logout", "Account", routeValues: new { sessionName = SessionNames.CustomerID })">Logout</a></li>
 					}
 					<li>
 						<a href="@Url.Action("ShowToCart", "ShoppingCart")">
@@ -66,10 +61,10 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 		</div>
 	</div>
 	<div class="clear"> </div>
-	<div class="top-header">
+	<div class="top-header" style="margin-left: 2rem; margin-right: 2rem;">
 		<div class="wrap">
-			@*@RenderPage("/Views/HomeScreen/ListOfCategory.cshtml")*@
 			<!--Dropdown list-->
+			@RenderPage("/Views/HomeScreen/ListOfCategory.cshtml")
 			<!----start-logo---->
 			<div class="logo">
 				<a href="@Url.Action("Index", "HomeScreen")"><img src="~/Assets/images/logo.png" title="logo" /></a>

@@ -1,0 +1,64 @@
+﻿@model MobilePhoneStoreEcommerce.Models.ViewModels.StoreViewModels
+@using PagedList.Mvc;
+@{
+	ViewBag.Title = "Store";
+	Layout = "~/Views/Shared/MainLayout.cshtml";
+}
+
+<div class="wrap">
+	<div class="content" style="width: 950px; float: left;">
+		<div class="content-grids">
+			@if (ViewBag.Action == "Store" || ViewBag.Action == "Producer")
+			{
+				<h2 class="for_h2" style="padding-left: 10px;">Products are available at the store</h2>
+			}
+			else if (ViewBag.Action == "Search")
+			{
+				<h2 class="for_h2" style="padding-left: 10px;">Result for search '@ViewBag.Search'</h2>
+			}
+			else if(ViewBag.Acion == "Cat")
+			{
+				<h2 class="for_h2">Category: @ViewBag.CatName</h2>
+			}
+			@foreach (var items in Model.allAvailableProducts)
+			{
+				<div class="grid_1_of_4 images_1_of_4 products-info">
+					<a href="@Url.Action("Details" , "HomeScreen", new { id = items.ID })">
+						<img src="/api/AvatarOfProducts/Get?ProductId= @items.ID" style="height: 196px; object-fit: cover;" />
+						@items.Name
+					</a>
+					<h3>@items.Price &nbsp;đ</h3>
+					<ul>
+						<li><a class="cart" href="/ShoppingCart/AddtoCart/@items.ID"> </a></li>
+						<li><a class="i" href="@Url.Action("Details", "HomeScreen", new { id = items.ID })"> </a></li>
+					</ul>
+				</div>
+			}
+
+		</div>
+		<div style="left: 66rem; top: 35rem; position: absolute">
+			@Html.PagedListPager(Model.allAvailableProducts, Page => Url.Action("Store", new { Page }))
+		</div>
+	</div>
+
+	<div class="content-sidebar">
+		<h2 class="for_h2">Producer</h2>
+		<ul>
+			<li><a href="@Url.Action("Store", "HomeScreen")">All</a></li>
+			@{
+				if (ViewBag.Producer == "Producer")
+				{
+					<li><a href="#">@ViewBag.ProducerName</a></li>
+				}
+				else
+				{
+					foreach (var items in Model.allProducers)
+					{
+						<li><a href="@Url.Action("Producer", "HomeScreen", new { id = items.ID })">@items.Name</a></li>
+					}
+				}
+			}
+		</ul>
+	</div>
+</div>
+<div class="clear"></div>

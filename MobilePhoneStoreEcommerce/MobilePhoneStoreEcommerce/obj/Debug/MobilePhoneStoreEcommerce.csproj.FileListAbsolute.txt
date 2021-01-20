@@ -108,3 +108,4 @@ D:\HK1_2020-2021\E-Commerce\Đồ án\MobilePhoneStoreEcommerce\MobilePhoneStore
 D:\HK1_2020-2021\E-Commerce\Đồ án\MobilePhoneStoreEcommerce\MobilePhoneStoreEcommerce\obj\Debug\MobilePhoneStoreEcommerce.csproj.CopyComplete
 D:\HK1_2020-2021\E-Commerce\Đồ án\MobilePhoneStoreEcommerce\MobilePhoneStoreEcommerce\obj\Debug\MobilePhoneStoreEcommerce.dll
 D:\HK1_2020-2021\E-Commerce\Đồ án\MobilePhoneStoreEcommerce\MobilePhoneStoreEcommerce\obj\Debug\MobilePhoneStoreEcommerce.pdb
+D:\HK1_2020-2021\E-Commerce\Đồ án\MobilePhoneStoreEcommerce\MobilePhoneStoreEcommerce\obj\Debug\MobilePhoneStoreEcommerce.csprojAssemblyReference.cache

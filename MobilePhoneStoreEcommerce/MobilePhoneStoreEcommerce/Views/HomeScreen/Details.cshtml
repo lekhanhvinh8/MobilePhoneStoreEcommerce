@@ -1,0 +1,123 @@
+﻿@model MobilePhoneStoreEcommerce.Core.Domain.Product
+@{
+	ViewBag.Title = "Details";
+	Layout = "~/Views/Shared/MainLayout.cshtml";
+}
+
+<script src="~/Assets/js/jquery.min.js"></script>
+<link rel="stylesheet" href="~/Assets/css/flexslider.css" type="text/css" media="screen" />
+<script src="~/Assets/js/imagezoom.js"></script>
+<!-- FlexSlider -->
+<script defer src="~/Assets/js/jquery.flexslider.js"></script>
+<script>
+	// Can also be used with $(document).ready()
+	$(window).load(function () {
+		$('.flexslider').flexslider({
+			animation: "slide",
+			controlNav: "thumbnails"
+		});
+	});
+</script>
+<!----->
+<script>
+	$(document).ready(function () {
+		$(".menu_body").hide();
+		//toggle the componenet with class menu_body
+		$(".menu_head").click(function () {
+			$(this).next(".menu_body").slideToggle(600);
+			var plusmin;
+			plusmin = $(this).children(".plusminus").text();
+
+			if (plusmin == '+')
+				$(this).children(".plusminus").text('-');
+			else
+				$(this).children(".plusminus").text('+');
+		});
+	});
+</script>
+<!----End-top-nav---->
+<!----End-Header---->
+<div class="clear"> </div>
+<div class="wrap">
+	<div class="content">
+		<div class="content-grids">
+			<div class="details-page">
+				<div class="back-links">
+					<ul>
+						<li><a href="@Url.Action("Index", "HomeScreen")">Home</a><img src="~/Assets/images/arrow.png" alt=""></li>
+						<li><a href="@Url.Action("Store", "HomeScreen")">Product</a><img src="~/Assets/images/arrow.png" alt=""></li>
+						<li><a href="">Detail</a><img src="~/Assets/images/arrow.png" alt=""></li>
+					</ul>
+				</div>
+			</div>
+			<div class="detalis-image">
+				<div class="flexslider">
+					<ul class="slides">
+						<li data-thumb="/api/AvatarOfProducts/Get?ProductId= @Model.ID">
+							<div class="thumb-image"> <img src="/api/AvatarOfProducts/Get?ProductId= @Model.ID" data-imagezoom="true" class="img-responsive" alt="" object-fit: cover; /> </div>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="detalis-image-details">
+				<div class="details-categories">
+				</div><br />
+				<div class="brand-value">
+					<h3>Name: @Model.Name</h3>
+					<div class="left-value-details">
+						<ul>
+							<li>Price:</li>
+							<li><h5>@Model.Price &nbsp;VNĐ</h5></li>
+							<br />
+						</ul>
+					</div>
+					<div class="right-value-details">
+						<a href="#">Instock</a>
+						<p>No reviews</p>
+					</div>
+					<div class="clear"> </div>
+				</div>
+				<div class="brand-history">
+					<a href="/ShoppingCart/AddtoCart/@Model.ID">Addcart</a>
+				</div>
+				<div class="clear"> </div>
+
+			</div>
+			<div class="clear"> </div>
+			<div class="menu_container">
+				<p class="menu_head">Infomation of product<span class="plusminus">+</span></p>
+				<div class="menu_body" style="display: none;">
+					<p>@Model.Description</p>
+				</div>
+				<p class="menu_head">Specification<span class="plusminus">+</span></p>
+				<div class="menu_body" style="display: none;">
+					<div class="menu_body2">
+						<table class="table table-bordered">
+							<thead>
+								<tr>
+									<td>Name</td>
+									<td>Value</td>
+								</tr>
+							</thead>
+							<tbody>
+								@foreach (var specification in Model.SpecificationValues)
+								{
+									<tr>
+										<td>
+											@specification.ProductSpecification.Name
+										</td>
+										<td>
+											@specification.Value
+										</td>
+									</tr>
+								}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+<div class="clear"> </div>

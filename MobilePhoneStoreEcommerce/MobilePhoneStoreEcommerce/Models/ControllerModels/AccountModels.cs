@@ -3,6 +3,7 @@ using MobilePhoneStoreEcommerce.Persistence;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -105,6 +106,20 @@ namespace MobilePhoneStoreEcommerce.Models.ControllerModels
                 newCustomer.Email = email;
                 newCustomer.DeliveryAddress = address;
                 _context.Cutomers.Add(newCustomer);
+                _context.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public bool UpdatePassword(Account Acc)
+        {
+            try
+            {                
+                _context.Accounts.AddOrUpdate(Acc);
                 _context.SaveChanges();
                 return true;
             }

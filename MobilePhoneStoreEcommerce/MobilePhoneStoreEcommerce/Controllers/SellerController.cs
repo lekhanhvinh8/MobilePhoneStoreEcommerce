@@ -1,5 +1,7 @@
 ﻿using MobilePhoneStoreEcommerce.Core;
+using MobilePhoneStoreEcommerce.Core.Dtos;
 using MobilePhoneStoreEcommerce.Core.ViewModels;
+using MobilePhoneStoreEcommerce.Persistence.Consts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +21,10 @@ namespace MobilePhoneStoreEcommerce.Controllers
         }
         public ActionResult Index(int sellerID)
         {
+            if (!CheckLoginForSeller())
+            {
+                return RedirectToAction("Login", "Account", new LoginViewModel() { AccountDto = new AccountDto(), RoleID = RoleIds.Seller });
+            }
             var productForSellerViewModel = new ProductForSellerViewModel() { SellerID = sellerID };
 
             return View(productForSellerViewModel);
@@ -43,6 +49,15 @@ namespace MobilePhoneStoreEcommerce.Controllers
             productForSellerViewModel.SellerID = sellerID;
 
             return View(productForSellerViewModel);
+        }
+
+        private bool CheckLoginForSeller()
+        {
+            if (Session[SessionNames.SellerID] == null)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

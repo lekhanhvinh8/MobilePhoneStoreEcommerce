@@ -32,6 +32,7 @@
 	<link href="~/Content/sb-admin-2.css" rel="stylesheet">
 	<link href="~/Content/Account.css" rel="stylesheet" type="text/css" />
 
+
 </head>
 
 <body class="bg-gradient-primary">
@@ -114,20 +115,14 @@
 
 	</div>
 	<script src="~/Scripts/jquery-3.4.1.min.js"></script>
-	<script src="~/Scripts/bootbox.js"></script>
 	@Scripts.Render("~/bundles/jqueryval")
 	<script>
         $(document).ready(function () {
-            if (@right == true) {
-                bootbox.alert({
-                    message: "Sign Up Success, Sign In Now !!!",
-                    callback: function () {
-                        var url = "@Url.Action("Login", "Account")";
-			            url = decodeURI(url);
-
-			            window.location.href = url;
-                    }
-                })
+			if (@right == true) {
+				alert('Sign Up Success, Sign In Now !!!')
+				var url = "@Url.Action("Login", "Account")";
+			    url = decodeURI(url);
+			    window.location.href = url;
             }
 		});
 	</script>
