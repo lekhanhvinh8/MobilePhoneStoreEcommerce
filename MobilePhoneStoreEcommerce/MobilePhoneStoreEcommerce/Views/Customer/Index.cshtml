@@ -1,69 +1,42 @@
 ﻿@model MobilePhoneStoreEcommerce.Core.ViewModels.CustomerViewModel
 @using MobilePhoneStoreEcommerce.Persistence.Consts
 @{
-    Layout = null;
+	Layout = null;
 }
 
-<!DOCTYPE html>
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Index</title>
+<div class="container">
+	<table id="table-orders" class="table table-bordered">
+		<thead></thead>
+		<tbody></tbody>
+	</table>
 
-    <link rel="stylesheet" type="text/css" href="~/Content/bootstrap.css"/>
-    <link rel="stylesheet" type="text/css" href="~/Content/DataTables/css/dataTables.bootstrap.min.css">
-</head>
-<body>
-    <header>
-        <div class="navbar navbar-default">
-            <div class="container">
-                <div class="navbar-header">
-                    @Html.ActionLink("Home", "Index", "HomeScreen", new { area = "" }, new { @class = "navbar-brand" })
-                </div>
-                <div class="navbar-collapse collapse">
-                    <div class="nav navbar-nav navbar-right">
-                        <img src="~/Content/resources/images/adminIcon.png" style="height: 50px;" />
-                        <ul class="nav navbar-nav navbar-right">
-                            <li>@Html.ActionLink("Log out", "Logout", "Account", routeValues: new { sessionName = SessionNames.CustomerID }, htmlAttributes: new { id = "logoutLink" })</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
-    <div class="container">
-        <table id="table-orders" class="table table-bordered">
-            <thead></thead>
-            <tbody></tbody>
-        </table>
+</div>
 
-    </div>
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script src="~/Scripts/bootstrap.js"></script>
+<script src="~/Scripts/bootbox.js"></script>
+<script src="~/Scripts/DataTables/jquery.dataTables.js"></script>
+<script src="~/Scripts/DataTables/dataTables.bootstrap.js"></script>
 
-    <script src="~/Scripts/jquery-3.4.1.js"></script>
-    <script src="~/Scripts/bootstrap.js"></script>
-    <script src="~/Scripts/bootbox.js"></script>
-    <script src="~/Scripts/DataTables/jquery.dataTables.js"></script>
-    <script src="~/Scripts/DataTables/dataTables.bootstrap.js"></script>
+<script>
+    $(document).ready(function () {
 
-    <script>
-        $(document).ready(function () {
+        var customerID = @Model.customerID;
 
-            var customerID = @Model.customerID;
+        $.ajax({
+            url: "/api/Orders/GetList?customerID=" + customerID,
+            method: "Get",
+            success: function (response) {
+                $.ajax({
+                    url: "/api/Orders/GetList?customerID=" + customerID + "&orderTime=" + response[0].orderTime,
+                    method: "Get",
+                    success: function (response) {
+                    },
+                })
+            },
 
-            $.ajax({
-                url: "/api/Orders/GetList?customerID=" + customerID,
-                method: "Get",
-                success: function (response) {
-                    $.ajax({
-                        url: "/api/Orders/GetList?customerID=" + customerID + "&orderTime=" + response[0].orderTime,
-                        method: "Get",
-                        success: function (response) {
-                        },
-                    })
-                },
-
-            });
+        });
 
             var table = $("#table-orders").DataTable({
                 ajax: {
@@ -131,15 +104,15 @@
                             if (order.status == @OrderStates.Confirmed)
                                 return "<button class='btn btn-success jsPayment' data-orderID=" + order.orderID + ">Payment</button>";
 
-                            return "<button disabled class='btn btn-success' data-orderID=" + data + ">Payment</button>";
-                        }
-                    },
-                    {
-                        title: "Cancel order",
-                        data: "orderID",
-                        render: function (data, type, order) {
-                            if (order.status == @OrderStates.Pending)
-                                return "<button class='btn btn-danger jsCancel' data-orderID=" + order.orderID + ">Cancel</button>";
+                        return "<button disabled class='btn btn-success' data-orderID=" + data + ">Payment</button>";
+                    }
+                },
+                {
+                    title: "Cancel order",
+                    data: "orderID",
+                    render: function (data, type, order) {
+                        if (order.status == @OrderStates.Pending)
+                            return "<button class='btn btn-danger jsCancel' data-orderID=" + order.orderID + ">Cancel</button>";
 
                             return "<button disabled class='btn btn-danger' data-orderID=" + data + ">Cancel</button>";
                         }
@@ -157,44 +130,44 @@
                             if (order.status == @OrderStates.Confirmed)
                                 return "<span>Confirmed</span>";
 
-                            if (order.status == @OrderStates.Pending)
-                                return "<span>Pending</span>";
+                        if (order.status == @OrderStates.Pending)
+                            return "<span>Pending</span>";
 
-                            return "<span>Paid</span>"
-                        }
+                        return "<span>Paid</span>"
                     }
+                }
 
-                ],
-                searching: false,
-                info: false,
-                ordering: false,
+            ],
+            searching: false,
+            info: false,
+            ordering: false,
+        });
+
+        table.on("click", ".jsCancel", function () {
+            var buttonCancel = $(this);
+
+            $.ajax({
+                url: "/api/Orders/CancelOrder?orderID=" + buttonCancel.attr("data-orderID"),
+                method: "get",
+                success: function () {
+                    var indexes = table.rows().eq(0).filter(function (rowIdx) {
+                        return table.cell(rowIdx, 0).data() == buttonCancel.attr("data-orderID");
+                    });
+                    var newData = table.row(indexes[0]).data();
+                    newData.status = @OrderStates.Canceled;
+                    table.row(indexes[0]).data(newData).draw();
+                },
             });
+        });
 
-            table.on("click", ".jsCancel", function () {
-                var buttonCancel = $(this);
+        table.on("click", ".jsPayment", function () {
+            var buttonPayment = $(this);
 
-                $.ajax({
-                    url: "/api/Orders/CancelOrder?orderID=" + buttonCancel.attr("data-orderID"),
-                    method: "get",
-                    success: function () {
-                        var indexes = table.rows().eq(0).filter(function (rowIdx) {
-                            return table.cell(rowIdx, 0).data() == buttonCancel.attr("data-orderID");
-                        });
-                        var newData = table.row(indexes[0]).data();
-                        newData.status = @OrderStates.Canceled;
-                        table.row(indexes[0]).data(newData).draw();
-                    },
-                });
-            });
+            window.location.href = "/Paypal/Payment?orderID=" + buttonPayment.attr("data-orderID");
+        })
 
-            table.on("click", ".jsPayment", function () {
-                var buttonPayment = $(this);
-
-                window.location.href = "/Paypal/Payment?orderID=" + buttonPayment.attr("data-orderID");
-            })
-
-            table.on("click", ".jsDelete", function () {
-                var buttonDelete = $(this);
+        table.on("click", ".jsDelete", function () {
+            var buttonDelete = $(this);
 
                 $.ajax({
                     url: "/api/Orders/DeleteOrder?orderID=" + buttonDelete.attr("data-orderID"),

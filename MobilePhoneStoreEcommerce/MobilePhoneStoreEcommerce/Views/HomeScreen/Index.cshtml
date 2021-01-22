@@ -44,10 +44,10 @@
                         <ul>
                             @if (Session[SessionNames.CustomerID] != null)
                             {
-                                <li><a class="cart add-to-cart" data-product-id=@items.ID data-customer-id=@Session[SessionNames.CustomerID]> </a></li>
-                            }
-                            else
-                            {
+                                <li><a style="cursor: pointer" class="cart add-to-cart" data-product-id=@items.ID data-customer-id=@Session[SessionNames.CustomerID]> </a></li>
+							}
+							else
+							{
                                 <li><a class="cart" href="@Url.Action("Login", "Account", new { roleID = RoleIds.Customer})"> </a></li>
                             }
                             <li><a class="i" href="@Url.Action("Details", "HomeScreen", new { id = items.ID })"> </a></li>

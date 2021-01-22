@@ -1,12 +1,13 @@
 ﻿@model MobilePhoneStoreEcommerce.Models.ViewModels.StoreViewModels
 @using PagedList.Mvc;
+@using MobilePhoneStoreEcommerce.Persistence.Consts
 @{
 	ViewBag.Title = "Store";
 	Layout = "~/Views/Shared/MainLayout.cshtml";
 }
 
 <div class="wrap">
-	<div class="content" style="width: 950px; float: left;">
+	<div class="content" style="width: 935px; float: left; position: relative">
 		<div class="content-grids">
 			@if (ViewBag.Action == "Store" || ViewBag.Action == "Producer")
 			{
@@ -29,14 +30,13 @@
 					</a>
 					<h3>@items.Price &nbsp;đ</h3>
 					<ul>
-						<li><a class="cart" href="/ShoppingCart/AddtoCart/@items.ID"> </a></li>
+						<li><a style="cursor: pointer" class="cart add-to-cart" data-product-id=@items.ID data-customer-id=@Session[SessionNames.CustomerID]> </a></li>
 						<li><a class="i" href="@Url.Action("Details", "HomeScreen", new { id = items.ID })"> </a></li>
 					</ul>
 				</div>
 			}
-
 		</div>
-		<div style="left: 66rem; top: 35rem; position: absolute">
+		<div style="left: 23rem; top: 0rem; position: absolute">
 			@Html.PagedListPager(Model.allAvailableProducts, Page => Url.Action("Store", new { Page }))
 		</div>
 	</div>
@@ -62,3 +62,64 @@
 	</div>
 </div>
 <div class="clear"></div>
+
+<script src="~/Scripts/jquery-ui.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $(".add-to-cart").on("click", function () {
+            var productID = $(this).attr("data-product-id");
+            var customerID = $(this).attr("data-customer-id");
+
+            $.ajax({
+                url: "/api/Carts/GetAmountOfCart?customerID=" + customerID + "&productID=" + productID,
+                method: "get",
+                success: function (response) {
+                    var amount = response;
+                    $.ajax({
+                        url: "/api/Carts/GetProductForCart?productID=" + productID,
+                        method: "get",
+                        success: function (response) {
+                            var quantity = response.quantity;
+
+                            if (quantity == 0 && amount == 0) {
+                                alert("The product is out of stock");
+                                return;
+                            }
+
+                            if ((quantity < amount + 1) && (amount > 0)) {
+                                //Cart has been added before and amount + 1 > quantity of product
+
+                                $.ajax({
+                                    url: "/api/Carts/UpdateAmount?customerID=" + customerID + "&productID=" + productID + "&amount=" + quantity,
+                                    method: "get",
+                                    success: function () {
+                                        alert("The product is out of stock, your cart has been updated");
+                                    }
+                                });
+
+                                return;
+                            }
+
+                            $.ajax({
+                                url: "/api/Carts/Add?customerID=" + customerID + "&productID=" + productID,
+                                method: "Get",
+                                success: function () {
+                                    $('html, body').animate({ scrollTop: $(".cart-image").offset().top }, 500, 'swing', function () {
+                                        $(".cart-image").effect("shake");
+                                    });
+                                }
+                            });
+                        },
+                    });
+                }
+            });
+
+
+
+
+        });
+
+    });
+
+</script>
