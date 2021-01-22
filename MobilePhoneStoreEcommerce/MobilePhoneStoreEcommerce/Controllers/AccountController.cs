@@ -203,8 +203,6 @@ namespace MobilePhoneStoreEcommerce.Controllers
                 throw new System.Web.Http.HttpResponseException(HttpStatusCode.NotFound);
 
             Session[sessionName] = null;
-            Session.Abandon();
-            Session.RemoveAll();
 
             return RedirectToAction("Index", "HomeScreen");
         }

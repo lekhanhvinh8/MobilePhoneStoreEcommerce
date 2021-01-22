@@ -31,39 +31,43 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 			</div>
 			<div class="clear"> </div>
 			<div class="header-top-nav">
-				<ul>
-					@if (Session[SessionNames.CustomerID] == null && Session[SessionNames.SellerID] == null)
-					{
-						<li><a href="@Url.Action("Index", "Seller", new { sellerID = RoleIds.Seller})">Seller</a></li>
-						<li><a href="@Url.Action("Register", "Account")">Register</a></li>
-						<li><a href="@Url.Action("Login", "Account")">Login</a></li>
-					}
-					else if (Session[SessionNames.SellerID] != null)
-					{
-						<li><a href="@Url.Action("Index", "Seller", new { sellerID = Session[SessionNames.SellerID]})">Seller</a></li>
-					}
-					else if (Session[SessionNames.CustomerID] != null)
-					{
-						<li><a href="@Url.Action("Index", "Seller", new { sellerID = RoleIds.Seller})">Seller</a></li>
-						<li><a href="@Url.Action("Info", "Customer", new { customerID = Session[SessionNames.CustomerID]})">MyAccount</a></li>
-						<li><a href="@Url.Action("Logout", "Account", routeValues: new { sessionName = SessionNames.CustomerID })">Logout</a></li>
-					}
-                <li>
-                    @if (Session[SessionNames.CustomerID] != null)
+                <ul>
+                    @if (Session[SessionNames.SellerID] != null)
                     {
-                        <a href="@Url.Action("Index", "Cart", new { customerID = Session[SessionNames.CustomerID]})">
-                            <img class="cart-image" src="@Url.Content("~/Assets/images/cart-icon.png")" style="height:50px; width: 50px; padding-top: 10px" />
-                        </a>
+                        <li><a href="@Url.Action("Index", "Seller", new { sellerID = Session[SessionNames.SellerID]})">Seller</a></li>
                     }
                     else
                     {
-                        <a href="@Url.Action("Login", "Account", new { roleID = RoleIds.Customer })">
-                            <img src="@Url.Content("~/Assets/images/cart-icon.png")" style="height:50px; width: 50px; padding-top: 10px" />
-                        </a>
+                        <li><a href="@Url.Action("Login", "Account", new { roleID = RoleIds.Seller})">Seller</a></li>
                     }
 
-                </li>
-				</ul>
+
+                    @if (Session[SessionNames.CustomerID] == null)
+                    {
+                        <li><a href="@Url.Action("Register", "Account")">Register</a></li>
+                        <li><a href="@Url.Action("Login", "Account")">Login</a></li>
+                    }
+                    else
+                    {
+                        <li><a href="@Url.Action("Info", "Customer", new { customerID = Session[SessionNames.CustomerID]})">My Account</a></li>
+                        <li><a href="@Url.Action("Logout", "Account", routeValues: new { sessionName = SessionNames.CustomerID })">Logout</a></li>
+                    }
+                    <li>
+                        @if (Session[SessionNames.CustomerID] != null)
+                        {
+                            <a href="@Url.Action("Index", "Cart", new { customerID = Session[SessionNames.CustomerID]})">
+                                <img class="cart-image" src="@Url.Content("~/Assets/images/cart-icon.png")" style="height:50px; width: 50px; padding-top: 10px" />
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("Login", "Account", new { roleID = RoleIds.Customer })">
+                                <img src="@Url.Content("~/Assets/images/cart-icon.png")" style="height:50px; width: 50px; padding-top: 10px" />
+                            </a>
+                        }
+
+                    </li>
+                </ul>
 			</div>
 			<div class="clear"> </div>
 		</div>
