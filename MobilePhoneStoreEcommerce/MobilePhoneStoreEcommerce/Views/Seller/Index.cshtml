@@ -94,6 +94,46 @@
         </div>
     </div>
 
+    <div id="dialog-order-detail" style="display:none;">
+        <form id="form-order-detail">
+            <div class="form-inline">
+                <label class="control-label" for="orderStatus">Order Status: </label>
+                <input class="form-control" name="orderStatus" disabled />
+            </div>
+            <div class="form-group">
+                <table class="table table-hover" name="table-products">
+                    <thead></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="form-inline">
+                <label class="control-label" for="customerID">Customer ID: </label>
+                <input class="form-control" name="customerID" style="margin-left:50px;" disabled />
+            </div>
+            <div class="form-inline">
+                <label class="control-label" for="phoneNumber">Phone Number: </label>
+                <input class="form-control" name="phoneNumber" style="margin-left:34px;" disabled />
+            </div>
+            <div class="form-inline">
+                <label class="control-label" for="deliveryAddress">Delivery Address: </label>
+                <input class="form-control" name="deliveryAddress" style="margin-left:20px;" disabled />
+            </div>
+
+            <div class="form-inline">
+                <label class="control-label" for="sellerName">Seller Name: </label>
+                <input class="form-control" name="sellerName" style="margin-left:53px;" disabled />
+            </div>
+            <div class="form-inline">
+                <label class="control-label" for="deliveryDate">Delivery Date: </label>
+                <input class="form-control" name="deliveryDate" style="margin-left:45px;" disabled />
+            </div>
+            <div class="form-inline">
+                <label class="control-label" for="shippingCost">Shipping Cost: </label>
+                <input class="form-control" name="shippingCost" style="margin-left:39px;" disabled />
+            </div>
+        </form>
+    </div>
+
     <script src="~/Scripts/jquery-3.4.1.js"></script>
     <script src="~/Scripts/bootstrap.js"></script>
     <script src="~/Scripts/bootbox.js"></script>
@@ -245,7 +285,7 @@
                         title: "See details",
                         data: "orderID",
                         render: function (data) {
-                            return "<button class='btn-link' data-orderID=" + data + ">Details</button>";
+                            return "<button class='btn-link jsDetail' data-orderID=" + data + ">Details</button>";
                         },
                     },
                     {
@@ -316,7 +356,7 @@
                         title: "See details",
                         data: "orderID",
                         render: function (data) {
-                            return "<button class='btn-link' data-orderID=" + data + ">Details</button>";
+                            return "<button class='btn-link jsDetail' data-orderID=" + data + ">Details</button>";
                         },
                     },
                     {
@@ -328,7 +368,7 @@
 
                             if(data == @OrderStates.Paid)
                                 return "<span>Paid</span>";
-                            
+
                             return "<span>Unpaid</span>";
                         },
                     },
@@ -465,7 +505,7 @@
                 })
 
             });
-            
+
             $("#table-shipping-orders").on("click", ".jsDelivery", function () {
                 var buttonDelivery = $(this);
 
@@ -480,6 +520,18 @@
                         tableShippingOrders.row(buttonDelivery.parents("tr")).data(newData).draw();
                     }
                 })
+
+            });
+
+            $("#table-shipping-orders").on("click", ".jsDetail", function () {
+                var button = $(this);
+                CreateBootboxOrderDetail(button.attr("data-orderID"));
+
+            });
+
+            $("#table-orders").on("click", ".jsDetail", function () {
+                var button = $(this);
+                CreateBootboxOrderDetail(button.attr("data-orderID"));
 
             });
 
@@ -511,6 +563,112 @@
                     return false;
 
                 return true;
+            }
+
+            function CreateBootboxOrderDetail(orderID) {
+                $.ajax({
+                    url: "/api/Orders/Get?orderID=" + orderID,
+                    method: "Get",
+                    async: false,
+                    success: function (orderDto) {
+                        var dialogBootbox = bootbox.dialog({
+                            message: $("#dialog-order-detail").html(),
+                            title: "Order Detail",
+                            //size: "large",
+                            buttons: [
+                                {
+                                    label: "Cancel",
+                                    className: "btn btn-danger",
+                                    callback: function () {
+                                    },
+                                },
+                            ],
+                        });
+
+                        var orderState = dialogBootbox.find("#form-order-detail input[name='orderStatus']");
+                        if (orderDto.status == @OrderStates.Pending)
+                            $(orderState).val("Pending");
+                        else if (orderDto.status == @OrderStates.Canceled)
+                            $(orderState).val("Canceled");
+                        else if (orderDto.status == @OrderStates.Confirmed)
+                            $(orderState).val("Confirm");
+                        else if (orderDto.status == @OrderStates.Paid)
+                            $(orderState).val("Paid");
+                        else if (orderDto.status == @OrderStates.Success)
+                            $(orderState).val("Success");
+
+                        var tableProducts = dialogBootbox.find("#form-order-detail table[name='table-products']");
+
+                        $(tableProducts).DataTable({
+                            data: orderDto.productOfOrderDtos,
+                            columns: [
+                                {
+                                    title: "Image",
+                                    data: "productID",
+                                    render: function (data) {
+                                        var markup = "<img id='avatar-preview' class='img-thumbnail' style='width: 100px; height: 100px; object-fit: cover' src='/api/AvatarOfProducts/Get?productID=" + data + "'/>";
+
+                                        return markup;
+                                    }
+                                },
+                                {
+                                    title: "Name",
+                                    data: "productName",
+                                    render: function (data, type, productsOfOrderDto) {
+                                        var markup = "";
+                                        markup += "<div>" + "<a href='HomeScreen/Details?id=" + productsOfOrderDto.productID + "'>" + data + "</a>" + "</div>";
+                                        return markup;
+                                    }
+                                },
+                                {
+                                    title: "Unit Price",
+                                    data: "unitPrice",
+                                    render: function (data) {
+                                        return "<span>" + standardizedMoneyFormatVND(data) + " VND</span>";
+                                    },
+                                },
+                                {
+                                    title: "Quantity",
+                                    data: "amount",
+                                    render: function (data) {
+                                        return "<span>x" + data + "</span>";
+                                    },
+                                },
+                                {
+                                    title: "Amount",
+                                    data: "orderID",
+                                    render: function (data, type, productsOfOrderDto) {
+                                        return "<span>" + standardizedMoneyFormatVND(productsOfOrderDto.unitPrice * productsOfOrderDto.amount) + " VND</span>";
+                                    },
+                                },
+                            ],
+                            searching: false,
+                            info: false,
+                            ordering: false,
+                            paging: false,
+                        });
+                    }
+                });
+            }
+
+            function standardizedMoneyFormatVND(money) {
+                money = money.toString();
+
+                var standardMoney = "";
+                var countTo3 = 1;
+
+                for (var i = money.length - 1; i >= 0; i--) {
+                    if (countTo3 < 4) {
+                        standardMoney += money[i];
+                    } else {
+                        countTo3 = 1;
+                        standardMoney += ".";
+                        standardMoney += money[i];
+                    }
+                    countTo3 += 1;
+                }
+
+                return standardMoney.split("").reverse().join("")
             }
         });
 

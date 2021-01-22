@@ -229,14 +229,14 @@
                 if (isRemoveSomeProducts) {
                     bootbox.alert("Some of your products are out of stock, please check the cart before ordering");
                 } else {
-                    bootbox.confirm("Are You Sure", function (result) {
+                    bootbox.confirm("Are You Sure To Order", function (result) {
                         if (result) {
                             $.ajax({
                                 url: "/api/Orders/CreateOrdersAndDeleteCart?customerID=" + @Model.CustomerID + "&deliveryAddress=" + $(".total-cost-area textarea[name='deliveryAddress']").val(),
                                 method: "get",
                                 success: function (response) {
                                     bootbox.alert("Order Success !!!", function () {
-                                        location.reload();
+                                        location.href = "/HomeScreen/Index";
                                     });
                                 }
                             });
@@ -282,6 +282,7 @@
 
             return standardMoney.split("").reverse().join("")
         }
+        
     });
 </script>
 

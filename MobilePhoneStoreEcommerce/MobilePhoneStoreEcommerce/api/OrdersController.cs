@@ -106,6 +106,12 @@ namespace MobilePhoneStoreEcommerce.api
             if (order == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
 
+            foreach (var productsOfOrder in order.ProductsOfOrders)
+            {
+                this._unitOfWork.Products.Load(p => p.ID == productsOfOrder.ProductID);
+            }
+            this._unitOfWork.Sellers.Load(s => s.ID == order.SellerID);
+
             return new OrderDto(order);
         }
         [HttpGet]
