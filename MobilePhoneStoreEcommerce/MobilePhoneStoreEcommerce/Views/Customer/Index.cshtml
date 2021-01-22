@@ -93,19 +93,28 @@
                             if (data == @OrderStates.Pending)
                                 return "<span>Pending</span>";
                             else if (data == @OrderStates.Confirmed)
-                                return "<span>waiting for delivery</span>";
+                                return "<span>Waiting for delivery</span>";
                             else if (data == @OrderStates.Paid)
                                 return "<span>Paid, waiting for delivery</span>";
+                            else if (data == @OrderStates.Success)
+                                return "<span>Success</span>";
                             else {
                                 return "<span>the order was canceled</span>";
                             }
                         }
                     },
                     {
-                        title: "Total Cost",
-                        data: "totalOrderCost",
+                        title: "Shipping Cost",
+                        data: "shippingCost",
                         render: function (data) {
                             return "<span>" + data + " VND</span>";
+                        }
+                    },
+                    {
+                        title: "Total Cost",
+                        data: "totalOrderCost",
+                        render: function (data, type, orderDto) {
+                            return "<span>" + standardizedMoneyFormatVND(data + orderDto.shippingCost) + " VND</span>";
                         },
                     },
                     {
@@ -139,8 +148,11 @@
                         title: "Delete",
                         data: "orderID",
                         render: function (data, type, order) {
-                            if (order.status == @OrderStates.Canceled || order.status == @OrderStates.Success)
+                            if (order.status == @OrderStates.Canceled)
                                 return "<button class='btn btn-danger jsDelete' data-orderID=" + order.orderID + ">Delete</button>";
+
+                            if (order.status == @OrderStates.Success)
+                                return "<span>Success</span>";
 
                             if (order.status == @OrderStates.Confirmed)
                                 return "<span>Confirmed</span>";
@@ -192,6 +204,26 @@
                     },
                 });
             })
+
+            function standardizedMoneyFormatVND(money) {
+                if ((typeof money) != "string")
+                    money = money.toString();
+
+                var standardMoney = "";
+                var countTo3 = 1;
+
+                for (var i = money.length - 1; i >= 0; i--) {
+                    if (countTo3 < 4) {
+                        standardMoney += money[i];
+                    } else {
+                        countTo3 = 1;
+                        standardMoney += ".";
+                        standardMoney += money[i];
+                    }
+                    countTo3 += 1;
+                }
+                return standardMoney.split("").reverse().join("");
+            }
         });
 
 

@@ -47,7 +47,7 @@ namespace MobilePhoneStoreEcommerce.api
 
             var orderDtos = new List<OrderDto>();
 
-            foreach (var order in this._unitOfWork.Orders.GetAllThenOrderByDate(s => s.SellerID == sellerID && (s.Status == OrderStates.Confirmed || s.Status == OrderStates.Paid)))
+            foreach (var order in this._unitOfWork.Orders.GetAllThenOrderByDate(s => s.SellerID == sellerID && (s.Status == OrderStates.Confirmed || s.Status == OrderStates.Paid || s.Status == OrderStates.Success)))
             {
                 orderDtos.Add(new OrderDto(order));
             }
@@ -133,7 +133,10 @@ namespace MobilePhoneStoreEcommerce.api
                 throw new HttpResponseException(HttpStatusCode.NotFound);
 
             if (order.Status != OrderStates.Pending)
-                throw new HttpResponseException(HttpStatusCode.BadRequest);
+            {
+                if(order.Status == OrderStates.Paid || order.DeliveryDate <= DateTime.Now)
+                    throw new HttpResponseException(HttpStatusCode.BadRequest);
+            }
 
             foreach (var productOfOrder in order.ProductsOfOrders)
             {
@@ -210,6 +213,7 @@ namespace MobilePhoneStoreEcommerce.api
                     order.DeliveryAddress = deliveryAddress;
                     order.OrderTime = timeNow;
                     order.DeliveryDate = timeDelivery;
+                    order.ShippingCost = Shipping.ShippingCost;
                     order.SellerID = cart.Product.SellerID;
                     order.ProductsOfOrders.Add(productsOfOrder);
 
@@ -229,7 +233,16 @@ namespace MobilePhoneStoreEcommerce.api
 
             return orderDtos;
         }
+        [HttpGet]
+        public void Delivery(int orderID)
+        {
+            var order = this._unitOfWork.Orders.Get(orderID);
+            if (order == null)
+                throw new HttpResponseException(HttpStatusCode.NotFound);
 
+            order.Status = OrderStates.Success;
+            this._unitOfWork.Complete();
+        }
 
         private bool IsSellerAuthorized(int sellerID)
         {

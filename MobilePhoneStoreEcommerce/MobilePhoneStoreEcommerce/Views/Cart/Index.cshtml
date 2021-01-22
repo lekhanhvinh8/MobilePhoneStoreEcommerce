@@ -19,14 +19,17 @@
 
         <div class="total-cost-area">
             <div class="form-group">
-                <label for="totalCost">Total Cost:</label>
-                <input class="form-control" type ="text" name="totalCost" disabled/>
-            </div>
-            <div class="form-group">
                 <label for="deliveryAddress">Your DeliveryAdress:</label>
                 <textarea class="form-control" name="deliveryAddress" rows="5"></textarea>
             </div>
-
+            <div class="form-group">
+                <label for="shippingCost">Shipping Cost:</label>
+                <input class="form-control" type="text" name="shippingCost" disabled value="@Shipping.ShippingCost VND" />
+            </div>
+            <div class="form-group">
+                <label for="totalCost">Total Cost:</label>
+                <input class="form-control" type="text" name="totalCost" disabled />
+            </div>
             <button id="btn-order" class="btn btn-danger" style="width:100%;">Order</button>
         </div>
     </div>
@@ -82,7 +85,7 @@
                     title: "Unit Price",
                     data: "unitPrice",
                     render: function (data) {
-                        var markup = "<div class='jsUnitPrice' data-unit-price=" + data + ">" + data + " VND</div>"
+                        var markup = "<div class='jsUnitPrice' data-unit-price=" + data + ">" + standardizedMoneyFormatVND(data) + " VND</div>"
 
                         return markup;
                     }
@@ -101,7 +104,7 @@
                     title: "Amount",
                     data: "amount",
                     render: function (data) {
-                        var markup = "<div class='jsAmount'>" + data + " VND" + "</div>"
+                        var markup = "<div class='jsAmount'>" + standardizedMoneyFormatVND(data) + " VND" + "</div>"
 
                         return markup;
                     },
@@ -254,8 +257,30 @@
                 totalCost += data.amounts * data.unitPrice;
             }
 
-            $(".total-cost-area input[name='totalCost']").val(totalCost);
+            totalCost += @Shipping.ShippingCost;
 
+            $(".total-cost-area input[name='totalCost']").val(standardizedMoneyFormatVND(totalCost) + " VND");
+            
+        }
+
+        function standardizedMoneyFormatVND(money) {
+            money = money.toString();
+
+            var standardMoney = "";
+            var countTo3 = 1;
+
+            for (var i = money.length - 1; i >= 0; i--) {
+                if (countTo3 < 4) {
+                    standardMoney += money[i];
+                } else {
+                    countTo3 = 1;
+                    standardMoney += ".";
+                    standardMoney += money[i];
+                }
+                countTo3 += 1;
+            }
+
+            return standardMoney.split("").reverse().join("")
         }
     });
 </script>

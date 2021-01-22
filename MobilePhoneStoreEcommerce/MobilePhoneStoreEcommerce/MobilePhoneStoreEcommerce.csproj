@@ -288,6 +288,7 @@
     <Compile Include="Persistence\Consts\OrderStates.cs" />
     <Compile Include="Persistence\Consts\RoleIds.cs" />
     <Compile Include="Persistence\Consts\SessionNames.cs" />
+    <Compile Include="Persistence\Consts\Shipping.cs" />
     <Compile Include="Persistence\CustomValidations\UniqueEmail.cs" />
     <Compile Include="Persistence\CustomValidations\ValidRoleLogin.cs" />
     <Compile Include="Persistence\CustomValidations\ValidUserNameRegister.cs" />

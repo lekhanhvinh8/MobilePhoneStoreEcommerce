@@ -108,7 +108,7 @@ namespace MobilePhoneStoreEcommerce.Controllers
 
             var itemList = new ItemList() { items = new List<Item>() };
             var tax = 1;
-            var shipping = 1;
+            var shipping = order.ShippingCost;
             var subtotal = 0;
 
             foreach (var productsOfOrder in order.ProductsOfOrders)
