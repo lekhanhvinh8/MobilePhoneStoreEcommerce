@@ -1,5 +1,6 @@
 ﻿using MobilePhoneStoreEcommerce.Core.Domain;
 using MobilePhoneStoreEcommerce.Core.Dtos;
+using MobilePhoneStoreEcommerce.Core.ViewModels;
 using MobilePhoneStoreEcommerce.Models.ControllerModels;
 using MobilePhoneStoreEcommerce.Persistence.Consts;
 using System;
@@ -12,7 +13,11 @@ namespace MobilePhoneStoreEcommerce.Controllers
 {
     public class CustomerController : Controller
     {
-        // GET: Customer
+        public ActionResult Index(int customerID)
+        {
+            var customerViewModel = new CustomerViewModel() { customerID = customerID };
+            return View(customerViewModel);
+        }
         public ActionResult Info(int customerID)
         {
             ViewBag.Info = "Customer";

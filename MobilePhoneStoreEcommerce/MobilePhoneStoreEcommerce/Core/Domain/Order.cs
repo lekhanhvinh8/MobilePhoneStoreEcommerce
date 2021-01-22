@@ -23,6 +23,7 @@ namespace MobilePhoneStoreEcommerce.Core.Domain
         public virtual Seller Seller { get; set; }
         public string DeliveryAddress { get; set; }
         public DateTime DeliveryDate { get; set; }
+        public float ShippingCost { get; set; }
 
     }
 }

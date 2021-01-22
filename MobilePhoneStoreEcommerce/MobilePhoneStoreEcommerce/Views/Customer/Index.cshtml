@@ -94,8 +94,11 @@
                                 return "<span>Pending</span>";
                             else if (data == @OrderStates.Confirmed)
                                 return "<span>waiting for delivery</span>";
-                            else
-                                return "<span>the order was canceled</span>"
+                            else if (data == @OrderStates.Paid)
+                                return "<span>Paid, waiting for delivery</span>";
+                            else {
+                                return "<span>the order was canceled</span>";
+                            }
                         }
                     },
                     {
@@ -113,26 +116,39 @@
                         },
                     },
                     {
+                        title: "Payment",
+                        data: "orderID",
+                        render: function (data, tupe, order) {
+                            if (order.status == @OrderStates.Confirmed)
+                                return "<button class='btn btn-success jsPayment' data-orderID=" + order.orderID + ">Payment</button>";
+
+                            return "<button disabled class='btn btn-success' data-orderID=" + data + ">Payment</button>";
+                        }
+                    },
+                    {
                         title: "Cancel order",
                         data: "orderID",
                         render: function (data, type, order) {
                             if (order.status == @OrderStates.Pending)
                                 return "<button class='btn btn-danger jsCancel' data-orderID=" + order.orderID + ">Cancel</button>";
 
-                            return "<button disabled class='btn btn-primary' data-orderID=" + data + ">Canceled</button>";
+                            return "<button disabled class='btn btn-danger' data-orderID=" + data + ">Cancel</button>";
                         }
                     },
                     {
                         title: "Delete",
                         data: "orderID",
                         render: function (data, type, order) {
-                            if (order.status == @OrderStates.Canceled)
+                            if (order.status == @OrderStates.Canceled || order.status == @OrderStates.Success)
                                 return "<button class='btn btn-danger jsDelete' data-orderID=" + order.orderID + ">Delete</button>";
 
                             if (order.status == @OrderStates.Confirmed)
                                 return "<span>Confirmed</span>";
 
-                            return "<span>Pending</span>";
+                            if (order.status == @OrderStates.Pending)
+                                return "<span>Pending</span>";
+
+                            return "<span>Paid</span>"
                         }
                     }
 
@@ -158,6 +174,12 @@
                     },
                 });
             });
+
+            table.on("click", ".jsPayment", function () {
+                var buttonPayment = $(this);
+
+                window.location.href = "/Paypal/Payment?orderID=" + buttonPayment.attr("data-orderID");
+            })
 
             table.on("click", ".jsDelete", function () {
                 var buttonDelete = $(this);

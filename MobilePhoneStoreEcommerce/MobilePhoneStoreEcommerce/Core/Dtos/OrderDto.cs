@@ -18,6 +18,7 @@ namespace MobilePhoneStoreEcommerce.Core.Dtos
             this.CustomerID = order.CustomerID;
             this.OrderTime = order.OrderTime;
             this.Status = order.Status;
+            this.DeliveryAddress = order.DeliveryAddress;
 
             this.ProductOfOrderDtos = new List<ProductsOfOrderDto>();
             foreach (var product in order.ProductsOfOrders)
@@ -40,7 +41,7 @@ namespace MobilePhoneStoreEcommerce.Core.Dtos
 
         [Required]
         public int CustomerID { get; set; }
-
+        public string DeliveryAddress { get; set; }
         [Required]
         public System.DateTime OrderTime { get; set; }
         public Nullable<int> Status { get; set; }

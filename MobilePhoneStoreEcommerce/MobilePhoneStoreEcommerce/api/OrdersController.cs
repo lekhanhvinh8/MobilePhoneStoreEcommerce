@@ -39,6 +39,21 @@ namespace MobilePhoneStoreEcommerce.api
 
             return orderDtos;
         }
+        [HttpGet]
+        public List<OrderDto> GetAllShippingOrder(int sellerID)
+        {
+            if (!IsSellerAuthorized(sellerID))
+                throw new HttpResponseException(HttpStatusCode.Unauthorized);
+
+            var orderDtos = new List<OrderDto>();
+
+            foreach (var order in this._unitOfWork.Orders.GetAllThenOrderByDate(s => s.SellerID == sellerID && (s.Status == OrderStates.Confirmed || s.Status == OrderStates.Paid)))
+            {
+                orderDtos.Add(new OrderDto(order));
+            }
+
+            return orderDtos;
+        }
 
         [HttpGet]
         public List<OrderDto> GetListByStatus(int status)
