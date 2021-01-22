@@ -209,6 +209,7 @@
     <Compile Include="Core\Dtos\AccountDto.cs" />
     <Compile Include="Core\Dtos\CartDto.cs" />
     <Compile Include="Core\Dtos\CategoryDto.cs" />
+    <Compile Include="Core\Dtos\InfoDto.cs" />
     <Compile Include="Core\Dtos\OrderDto.cs" />
     <Compile Include="Core\Dtos\ProducerDto.cs" />
     <Compile Include="Core\Dtos\ProductDto.cs" />
@@ -267,6 +268,7 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ControllerModels\AccountModels.cs" />
+    <Compile Include="Models\ControllerModels\InfoModels.cs" />
     <Compile Include="Models\ControllerModels\ProductModel.cs" />
     <Compile Include="Models\ViewModels\AllRoles.cs" />
     <Compile Include="Models\ViewModels\ChangePasswordViewModels.cs" />
@@ -650,6 +652,7 @@
     <Content Include="Views\HomeScreen\Store.cshtml" />
     <Content Include="Views\HomeScreen\ListOfCategory.cshtml" />
     <Content Include="Views\Account\ForgotPassword.cshtml" />
+    <Content Include="Views\Customer\Info.cshtml" />
     <Content Include="Views\Cart\Index.cshtml" />
     <Content Include="Views\Customer\Index.cshtml" />
   </ItemGroup>
