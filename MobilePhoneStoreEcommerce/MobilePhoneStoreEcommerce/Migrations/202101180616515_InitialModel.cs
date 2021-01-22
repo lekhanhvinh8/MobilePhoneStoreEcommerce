@@ -1,5 +1,7 @@
 ﻿namespace MobilePhoneStoreEcommerce.Migrations
 {
+    using MobilePhoneStoreEcommerce.Models.ControllerModels;
+    using MobilePhoneStoreEcommerce.Persistence.Consts;
     using System;
     using System.Data.Entity.Migrations;
     
@@ -249,9 +251,31 @@
                 .ForeignKey("dbo.Products", t => t.Product_ID, cascadeDelete: true)
                 .Index(t => t.Customer_ID)
                 .Index(t => t.Product_ID);
-            
+
+            Sql("insert into Roles(Name) Values('Admin')");
+            Sql("insert into Roles(Name) Values('Seller')");
+            Sql("insert into Roles(Name) Values('Customer')");
+            Sql("insert into Roles(Name) Values('Shipper')");
+
+            var passwordHash = AccountModels.Encrypt("Admin", true);
+
+            Sql("insert into Accounts(UserName, PasswordHash, RoleID) Values('Admin', '" + passwordHash  + "', " + RoleIds.Admin + ")");
+            Sql("insert into Accounts(UserName, PasswordHash, RoleID) Values('Seller1', '" + passwordHash + "', " + RoleIds.Seller + ")");
+            Sql("insert into Accounts(UserName, PasswordHash, RoleID) Values('Seller2', '" + passwordHash + "', " + RoleIds.Seller + ")");
+            Sql("insert into Accounts(UserName, PasswordHash, RoleID) Values('Customer1', '" + passwordHash + "', " + RoleIds.Customer + ")");
+            Sql("insert into Accounts(UserName, PasswordHash, RoleID) Values('Customer2', '" + passwordHash + "', " + RoleIds.Customer + ")");
+
+
+            Sql("insert into Sellers(ID, Name, PhoneNumber, Email, WarehouseAddress) Values('2', 'Vinh', '0765764050', 'a@gmail.com', 'Vinh Long')");
+            Sql("insert into Sellers(ID, Name, PhoneNumber, Email, WarehouseAddress) Values('3', 'Vinh', '0765764050', 'b@gmail.com', 'Vinh Long')");
+            Sql("insert into Customers(ID, Name, PhoneNumber, Email, DeliveryAddress) Values('4', 'Vinh', '0765764050', 'c@gmail.com', 'Vinh Long')");
+            Sql("insert into Customers(ID, Name, PhoneNumber, Email, DeliveryAddress) Values('5', 'Vinh', '0765764050', 'd@gmail.com', 'Vinh Long')");
+
+
+
+
         }
-        
+
         public override void Down()
         {
             DropForeignKey("dbo.Accounts", "RoleID", "dbo.Roles");

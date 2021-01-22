@@ -14,5 +14,10 @@ namespace MobilePhoneStoreEcommerce.Persistence.Repositories
         {
 
         }
+        public float TotalMoneyInCart()
+        {
+            var total = this.Context.Set<Cart>().Sum(c => (double?)c.Product.Price * c.Amount) ?? 0f;
+            return (float)total;
+        }
     }
 }

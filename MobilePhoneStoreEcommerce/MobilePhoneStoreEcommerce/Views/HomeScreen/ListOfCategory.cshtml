@@ -1,6 +1,8 @@
 ﻿
 @{
-	List<MobilePhoneStoreEcommerce.Core.Domain.Category> categories = new MobilePhoneStoreEcommerce.Models.ControllerModels.ProductModel().allCategories();
+    var productModel = new MobilePhoneStoreEcommerce.Models.ControllerModels.ProductModel();
+
+    List<MobilePhoneStoreEcommerce.Core.Domain.Category> categories = productModel.allCategories();
 }
 
 <div class="dropdown">

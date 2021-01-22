@@ -1,4 +1,5 @@
 ﻿using MobilePhoneStoreDBMS.Models.CustomValidations;
+using MobilePhoneStoreEcommerce.Persistence.CustomValidations;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -18,6 +19,7 @@ namespace MobilePhoneStoreEcommerce.Core.Dtos
         [Required(ErrorMessage = "Please enter your mail")]
         [RegularExpression(@"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}", ErrorMessage = "Your mail is not valid")]
         [StringLength(50, MinimumLength = 6)]
+        [UniqueEmail]
         public string Email { get; set; }
 
         [Required(ErrorMessage = "Please enter your user name")]

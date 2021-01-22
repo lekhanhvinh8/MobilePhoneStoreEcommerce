@@ -1,17 +1,23 @@
 ﻿using MobilePhoneStoreEcommerce.Core;
 using MobilePhoneStoreEcommerce.Core.Dtos;
+using MobilePhoneStoreEcommerce.Core.Services;
+using MobilePhoneStoreEcommerce.Persistence.Consts;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Web;
 using System.Web.Http;
 namespace MobilePhoneStoreEcommerce.api
 {
     public class SpecificationsController : ApiController
     {
         private IUnitOfWork _unitOfWork;
-        public SpecificationsController(IUnitOfWork unitOfWork)
+        private readonly IAccountAuthentication _accountAuthentication;
+
+        public SpecificationsController(IUnitOfWork unitOfWork, IAccountAuthentication accountAuthentication)
         {
             this._unitOfWork = unitOfWork;
+            this._accountAuthentication = accountAuthentication;
         }
         public List<ProductSpecificationDto> GetAll()
         {
@@ -35,6 +41,9 @@ namespace MobilePhoneStoreEcommerce.api
         [HttpPost]
         public ProductSpecificationDto Create(ProductSpecificationDto specificationDto)
         {
+            if (!IsAuthorized())
+                throw new HttpResponseException(HttpStatusCode.Unauthorized);
+
             var specification = specificationDto.ToSpecification();
 
             this._unitOfWork.ProductSpecifications.Add(specification);
@@ -46,6 +55,9 @@ namespace MobilePhoneStoreEcommerce.api
         [HttpPut]
         public ProductSpecificationDto Update(ProductSpecificationDto specificationDto)
         {
+            if (!IsAuthorized())
+                throw new HttpResponseException(HttpStatusCode.Unauthorized);
+
             var specification = this._unitOfWork.ProductSpecifications.Get(specificationDto.SpecificationID);
 
             if (specification == null)
@@ -62,6 +74,9 @@ namespace MobilePhoneStoreEcommerce.api
         [HttpDelete]
         public ProductSpecificationDto Delete(int iD)
         {
+            if (!IsAuthorized())
+                throw new HttpResponseException(HttpStatusCode.Unauthorized);
+
             var specification = this._unitOfWork.ProductSpecifications.Get(iD);
 
             if (specification == null)
@@ -76,6 +91,16 @@ namespace MobilePhoneStoreEcommerce.api
             this._unitOfWork.Complete();
 
             return new ProductSpecificationDto(specification);
+        }
+
+        private bool IsAuthorized()
+        {
+            var sessionAdminID = HttpContext.Current.Session[SessionNames.AdminID];
+
+            if (!this._accountAuthentication.IsAuthentic(sessionAdminID))
+                return false;
+
+            return true;
         }
     }
 }

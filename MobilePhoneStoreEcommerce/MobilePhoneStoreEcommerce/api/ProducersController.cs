@@ -1,8 +1,11 @@
 ﻿using MobilePhoneStoreEcommerce.Core;
 using MobilePhoneStoreEcommerce.Core.Dtos;
+using MobilePhoneStoreEcommerce.Core.Services;
+using MobilePhoneStoreEcommerce.Persistence.Consts;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Web;
 using System.Web.Http;
 
 namespace MobilePhoneStoreEcommerce.api
@@ -10,9 +13,12 @@ namespace MobilePhoneStoreEcommerce.api
     public class ProducersController : ApiController
     {
         private IUnitOfWork _unitOfWork;
-        public ProducersController(IUnitOfWork unitOfWork)
+        private readonly IAccountAuthentication _accountAuthentication;
+
+        public ProducersController(IUnitOfWork unitOfWork, IAccountAuthentication accountAuthentication)
         {
             this._unitOfWork = unitOfWork;
+            this._accountAuthentication = accountAuthentication;
         }
 
         public List<ProducerDto> GetAll()
@@ -40,6 +46,9 @@ namespace MobilePhoneStoreEcommerce.api
         [HttpPost]
         public ProducerDto Create(ProducerDto producerDto)
         {
+            if (!IsAuthorized())
+                throw new HttpResponseException(HttpStatusCode.Unauthorized);
+
             var producer = producerDto.ToProducer();
 
             this._unitOfWork.Producers.Add(producer);
@@ -51,6 +60,9 @@ namespace MobilePhoneStoreEcommerce.api
         [HttpPut]
         public ProducerDto Update(ProducerDto producerDto)
         {
+            if (!IsAuthorized())
+                throw new HttpResponseException(HttpStatusCode.Unauthorized);
+
             var producer = this._unitOfWork.Producers.Get(producerDto.ProducerID);
 
             if (producer == null)
@@ -65,6 +77,9 @@ namespace MobilePhoneStoreEcommerce.api
 
         public ProducerDto Delete(int iD)
         {
+            if (!IsAuthorized())
+                throw new HttpResponseException(HttpStatusCode.Unauthorized);
+
             var producer = this._unitOfWork.Producers.Get(iD);
 
             if (producer == null)
@@ -74,6 +89,16 @@ namespace MobilePhoneStoreEcommerce.api
             this._unitOfWork.Complete();
 
             return new ProducerDto(producer);
+        }
+
+        private bool IsAuthorized()
+        {
+            var sessionAdminID = HttpContext.Current.Session[SessionNames.AdminID];
+
+            if (!this._accountAuthentication.IsAuthentic(sessionAdminID))
+                return false;
+
+            return true;
         }
     }
 }

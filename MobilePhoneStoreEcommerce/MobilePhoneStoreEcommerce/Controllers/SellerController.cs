@@ -24,7 +24,7 @@ namespace MobilePhoneStoreEcommerce.Controllers
         public ActionResult Index(int sellerID)
         {
             if (!IsAuthorized(sellerID))
-                throw new HttpResponseException(HttpStatusCode.Unauthorized);
+                return RedirectToAction("Login", "Account", new { roleID = RoleIds.Seller });
 
             var productForSellerViewModel = new ProductForSellerViewModel() { SellerID = sellerID };
 
@@ -61,7 +61,7 @@ namespace MobilePhoneStoreEcommerce.Controllers
         private bool IsAuthorized(int sellerID)
         {
             var session = Session[SessionNames.SellerID];
-            if (!this._accountAuthentication.IsAuthentic(sellerID, session) || !this._accountAuthentication.IsAuthorized(sellerID, RoleIds.Seller))
+            if (!this._accountAuthentication.IsAuthentic(sellerID, session))
                 return false;
 
             return true;

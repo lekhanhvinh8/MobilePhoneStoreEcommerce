@@ -1,0 +1,264 @@
+﻿@model MobilePhoneStoreEcommerce.Core.ViewModels.CartViewModel
+@using MobilePhoneStoreEcommerce.Persistence.Consts
+@{
+    ViewBag.Titel = "Cart";
+}
+
+<link rel="stylesheet" href="~/Content/Cart.css" />
+<link rel="stylesheet" type="text/css" href="~/Content/bootstrap.css" />
+<link rel="stylesheet" type="text/css" href="~/Content/DataTables/css/dataTables.bootstrap.min.css" />
+
+<div class="wrap">
+    <div class="cart-area">
+        <div class="products-area">
+            <table id="table-products" class="table table-hover ">
+                <thead></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div class="total-cost-area">
+            <div class="form-group">
+                <label for="totalCost">Total Cost:</label>
+                <input class="form-control" type ="text" name="totalCost" disabled/>
+            </div>
+            <div class="form-group">
+                <label for="deliveryAddress">Your DeliveryAdress:</label>
+                <textarea class="form-control" name="deliveryAddress" rows="5"></textarea>
+            </div>
+
+            <button id="btn-order" class="btn btn-danger" style="width:100%;">Order</button>
+        </div>
+    </div>
+</div>
+
+<div class="clear"></div>
+
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script src="~/Scripts/bootstrap.js"></script>
+<script src="~/Scripts/bootbox.js"></script>
+<script src="~/Scripts/DataTables/jquery.dataTables.js"></script>
+<script src="~/Scripts/DataTables/dataTables.bootstrap.js"></script>
+
+<script>
+    $(document).ready(function () {
+
+        var model = @Html.Raw(Json.Encode(Model));
+        $(".total-cost-area textarea[name='deliveryAddress']").val(model.CustomerAddress);
+
+        var tableProducts = $("#table-products").DataTable({
+            ajax: {
+                url: "/api/Carts/GetAll?customerID=" + @Model.CustomerID,
+                dataSrc: "",
+            },
+            createdRow: function (row, data, dataIndex) {
+                $(row).attr("data-product-id", data.productID);
+            },
+            columns: [
+                {
+                    title: "Image",
+                    data: "productID",
+                    render: function (data) {
+                        var markup = "<img id='avatar-preview' class='img-thumbnail' style='width: 100px; height: 100px; object-fit: cover' src='/api/AvatarOfProducts/Get?productID=" + data + "'/>";
+
+                        return markup;
+                    }
+                },
+                {
+                    title: "Name",
+                    data: "productName",
+                    render: function (data, type, cartDto) {
+                        var markup = "";
+
+                        markup += "<div>" + "<a href='HomeScreen/Details?id=" + cartDto.productID + "'>" + data + "</a>" + "</div>";
+                        markup += "<div>provided by: " + cartDto.sellerName + "</div>";
+                        markup += "<br/>"
+                        markup += "<div><button class='btn btn-danger jsCancel' data-product-id=" + cartDto.productID + ">Cancel</button></div>"
+
+                        return markup;
+                    }
+                },
+                {
+                    title: "Unit Price",
+                    data: "unitPrice",
+                    render: function (data) {
+                        var markup = "<div class='jsUnitPrice' data-unit-price=" + data + ">" + data + " VND</div>"
+
+                        return markup;
+                    }
+                },
+                {
+                    title: "Quantity",
+                    data: "amounts",
+                    width: "10%",
+                    render: function (data) {
+                        var markup = "<input type='number' class='form-control jsQuantity' name='quantity' style='width:77px;' min='1' value=" + data + ">";
+
+                        return markup;
+                    }
+                },
+                {
+                    title: "Amount",
+                    data: "amount",
+                    render: function (data) {
+                        var markup = "<div class='jsAmount'>" + data + " VND" + "</div>"
+
+                        return markup;
+                    },
+                }
+
+            ],
+            searching: false,
+            info: false,
+            ordering: false,
+            lengthChange: false,
+            paging: false,
+            initComplete: function () {
+                CalTotalCost();
+            },
+        });
+
+        $("#table-products tbody").on('keyup mouseup', ".jsQuantity", function () {
+
+            var tr = $(this).parents("tr");
+
+            var quantity = tr.find(".jsQuantity").val();
+
+            if (quantity == "")
+                return;
+
+            var newData = tableProducts.row(tr).data();
+
+            if (quantity == newData.amounts)
+                return;
+
+            $.ajax({
+                url: "/api/Carts/UpdateAmount?customerID=" + @Model.CustomerID + "&productID=" + tr.attr("data-product-id") + "&amount=" + quantity,
+                method: "Get",
+                success: function (response) {
+                    if (response == 0) {
+                        bootbox.alert("Sorry, the shop has only " + response + " products left")
+
+                        tableProducts.row(tr).remove().draw();
+
+                    } else if (response < quantity) {
+                        bootbox.alert("Sorry, the shop has only " + response + " products left")
+
+                        //tr.find(".jsQuantity").val(response);
+                        //var unitPrice = tr.find(".jsUnitPrice").attr("data-unit-price");
+                        //tr.find(".jsAmount").text(response * unitPrice + " VND");
+
+                        newData.amounts = response;
+                        newData.amount = response * newData.unitPrice;
+
+                        tableProducts.row(tr).data(newData).draw();
+                    }
+                    else {
+                        newData.amounts = parseInt(quantity);
+                        newData.amount = newData.amounts * newData.unitPrice;
+
+                        tableProducts.row(tr).data(newData).draw();
+                    }
+
+                    CalTotalCost();
+                },
+            });
+        });
+
+        $("#table-products tbody").on("click", ".jsCancel", function () {
+            var button = $(this);
+
+            $.ajax({
+                url: "/api/Carts/Delete?customerID=" + @Model.CustomerID + "&productID=" + button.attr("data-product-id"),
+                method: "Delete",
+                success: function () {
+                    tableProducts.row(button.parents("tr")).remove().draw();
+                    CalTotalCost();
+                },
+            });
+
+        });
+
+        $("#btn-order").on("click", function () {
+            if (tableProducts.rows().count() == 0) {
+                bootbox.alert("Your Cart Is Empty !!!", function () {
+                    return;
+                });
+            } else {
+                var isRemoveSomeProducts = false;
+                for (var i = 0; i < tableProducts.rows().count(); i++) {
+
+                    var newData = tableProducts.row(i).data();
+                    var quantity = newData.amounts;
+                    var row = tableProducts.row(i);
+
+                    $.ajax({
+                        url: "/api/Carts/UpdateAmount?customerID=" + @Model.CustomerID + "&productID=" + newData.productID + "&amount=" + quantity,
+                        method: "Get",
+                        async: false,
+                        success: function (response) {
+                            if (response == 0) {
+                                row.remove().draw();
+                                isRemoveSomeProducts = true;
+
+                                i--;
+
+                            } else if (response < quantity) {
+                                newData.amounts = response;
+                                newData.amount = response * newData.unitPrice;
+
+                                row.data(newData).draw();
+                                isRemoveSomeProducts = true;
+                            }
+                            else {
+                                newData.amounts = parseInt(quantity);
+                                newData.amount = newData.amounts * newData.unitPrice;
+
+                                row.data(newData).draw();
+                            }
+
+                        },
+                    });
+                }
+
+                CalTotalCost();
+
+                if (isRemoveSomeProducts) {
+                    bootbox.alert("Some of your products are out of stock, please check the cart before ordering");
+                } else {
+                    bootbox.confirm("Are You Sure", function (result) {
+                        if (result) {
+                            $.ajax({
+                                url: "/api/Orders/CreateOrdersAndDeleteCart?customerID=" + @Model.CustomerID + "&deliveryAddress=" + $(".total-cost-area textarea[name='deliveryAddress']").val(),
+                                method: "get",
+                                success: function (response) {
+                                    bootbox.alert("Order Success !!!", function () {
+                                        location.reload();
+                                    });
+                                }
+                            });
+                        }
+                    });
+
+                }
+
+            }
+
+        })
+
+        function CalTotalCost() {
+            var totalCost = 0;
+            for (var i = 0; i < tableProducts.rows().count(); i++) {
+                var data = tableProducts.row(i).data();
+
+                totalCost += data.amounts * data.unitPrice;
+            }
+
+            $(".total-cost-area input[name='totalCost']").val(totalCost);
+
+        }
+    });
+</script>
+
+
+

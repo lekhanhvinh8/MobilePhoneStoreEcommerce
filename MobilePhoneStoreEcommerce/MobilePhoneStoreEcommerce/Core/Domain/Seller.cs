@@ -10,6 +10,7 @@ namespace MobilePhoneStoreEcommerce.Core.Domain
         public Seller()
         {
             this.Products = new List<Product>();
+            this.Orders = new List<Order>();
         }
         public int ID { get; set; }
         public string Name { get; set; }
@@ -18,6 +19,7 @@ namespace MobilePhoneStoreEcommerce.Core.Domain
         public string WarehouseAddress { get; set; }
         public virtual Account Account { get; set; }
         public virtual List<Product> Products { get; set; }
+        public virtual List<Order> Orders { get; set; } 
 
     }
 }

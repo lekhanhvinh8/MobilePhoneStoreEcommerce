@@ -7,16 +7,21 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using MobilePhoneStoreEcommerce.Core;
+using System.Web;
+using MobilePhoneStoreEcommerce.Persistence.Consts;
+using MobilePhoneStoreEcommerce.Core.Services;
 
 namespace MobilePhoneStoreEcommerce.api
 {
     public class SpecificationValuesController : ApiController
     {
         private IUnitOfWork _unitOfWork;
+        private readonly IAccountAuthentication _accountAuthentication;
 
-        public SpecificationValuesController(IUnitOfWork unitOfWork)
+        public SpecificationValuesController(IUnitOfWork unitOfWork, IAccountAuthentication accountAuthentication)
         {
             this._unitOfWork = unitOfWork;
+            this._accountAuthentication = accountAuthentication;
         }
         public List<SpecificationValueDto> GetAll()
         {
@@ -43,6 +48,9 @@ namespace MobilePhoneStoreEcommerce.api
         [HttpPost]
         public SpecificationValueDto Create(SpecificationValueDto specificationValueDto)
         {
+            if (!IsAuthorized())
+                throw new HttpResponseException(HttpStatusCode.Unauthorized);
+
             var specificationValue = specificationValueDto.CreateModel();
 
             this._unitOfWork.SpecificationValues.Add(specificationValue);
@@ -54,6 +62,9 @@ namespace MobilePhoneStoreEcommerce.api
         [HttpDelete]
         public SpecificationValueDto Delete(SpecificationValueDto specificationValueDto)
         {
+            if (!IsAuthorized())
+                throw new HttpResponseException(HttpStatusCode.Unauthorized);
+
             var specificationValue =  this._unitOfWork.SpecificationValues.SingleOrDefault(s => s.ProductSpecificationID == specificationValueDto.SpecificationID && s.Value == specificationValueDto.Value);
 
             if (specificationValue == null)
@@ -63,6 +74,16 @@ namespace MobilePhoneStoreEcommerce.api
             this._unitOfWork.Complete();
 
             return new SpecificationValueDto(specificationValue);
+        }
+
+        private bool IsAuthorized()
+        {
+            var sessionAdminID = HttpContext.Current.Session[SessionNames.AdminID];
+
+            if (!this._accountAuthentication.IsAuthentic(sessionAdminID))
+                return false;
+
+            return true;
         }
     }
 }

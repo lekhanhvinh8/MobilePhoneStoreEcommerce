@@ -21,12 +21,16 @@ namespace MobilePhoneStoreEcommerce.Persistence.Services
 
             try
             {
-                var accountIDInSession = int.Parse(sessionAccountID.ToString());
+                var accountIDInSession = Convert.ToInt32(sessionAccountID);
 
-                if (accountIDInSession == accountID)
-                    return true;
+                var account = this._unitOfWork.Accounts.Get(accountIDInSession);
+                if (account == null)
+                    return false;
 
+                if (accountIDInSession != accountID)
                 return false;
+
+                return true;
             }
             catch (Exception)
             {
@@ -34,6 +38,28 @@ namespace MobilePhoneStoreEcommerce.Persistence.Services
             }
         }
 
+        public bool IsAuthentic(object sessionAccountID)
+        {
+            if (sessionAccountID == null)
+                return false;
+
+            try
+            {
+                var accountIDInSession = Convert.ToInt32(sessionAccountID);
+
+                var account = this._unitOfWork.Accounts.Get(accountIDInSession);
+                if (account == null)
+                    return false;
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        /*
         public bool IsAuthorized(int accountID, int roleID)
         {
             var account = this._unitOfWork.Accounts.Get(accountID);
@@ -46,5 +72,6 @@ namespace MobilePhoneStoreEcommerce.Persistence.Services
 
             return true;
         }
+        */
     }
 }

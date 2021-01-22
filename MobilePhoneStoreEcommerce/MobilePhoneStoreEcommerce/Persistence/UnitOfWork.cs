@@ -29,6 +29,7 @@ namespace MobilePhoneStoreEcommerce.Persistence
             ProductSpecifications = new ProductSpecificationRepository(_context);
             SpecificationValues = new SpecificationValueRepository(_context);
             StarRatings = new StarRatingRepository(_context);
+            Sellers = new SellerRepository(_context);
         }
 
         public ICategoryRepository Categories { get; private set; }
@@ -60,6 +61,7 @@ namespace MobilePhoneStoreEcommerce.Persistence
         public ISpecificationValueRepository SpecificationValues { get; private set; }
 
         public IStarRatingRepository StarRatings { get; private set; }
+        public ISellerRepository Sellers { get; private set; }
 
         public int Complete()
         {
