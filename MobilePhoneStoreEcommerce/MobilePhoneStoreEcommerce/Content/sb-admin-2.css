@@ -614,6 +614,7 @@ pre code {
   flex-wrap: wrap;
   margin-right: -0.75rem;
   margin-left: -0.75rem;
+  margin-bottom: 6px;
 }
 
 .no-gutters {
@@ -898,11 +899,11 @@ pre code {
     flex: 0 0 33.33333%;
     max-width: 33.33333%;
   }
-  .col-sm-5 {
+  .sb-col-sm-5 {
     flex: 0 0 41.66667%;
     max-width: 41.66667%;
   }
-  .col-sm-6 {
+  .sb-col-sm-6 {
     flex: 0 0 50%;
     max-width: 50%;
   }
@@ -2295,6 +2296,7 @@ textarea.form-control {
   .form-inline .form-control {
     display: inline-block;
     width: auto;
+    height: auto;
     vertical-align: middle;
   }
   .form-inline .form-control-plaintext {

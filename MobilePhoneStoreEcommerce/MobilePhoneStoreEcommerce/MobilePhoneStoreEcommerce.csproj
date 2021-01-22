@@ -83,6 +83,9 @@
     <Reference Include="PagedList.Mvc, Version=4.5.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
       <HintPath>..\packages\PagedList.Mvc.4.5.0.0\lib\net40\PagedList.Mvc.dll</HintPath>
     </Reference>
+    <Reference Include="PayPal, Version=1.9.1.0, Culture=neutral, PublicKeyToken=5b4afc1ccaef40fb, processorArchitecture=MSIL">
+      <HintPath>..\packages\PayPal.1.9.1\lib\net451\PayPal.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -188,6 +191,7 @@
     <Compile Include="Controllers\CartController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\PaypalController.cs" />
     <Compile Include="Controllers\SellerController.cs" />
     <Compile Include="Controllers\HomeScreenController.cs" />
     <Compile Include="Core\Domain\Account.cs" />
@@ -266,10 +270,16 @@
     <Compile Include="Migrations\202101220259312_AddDateDeliveryToOrderTable.designer.cs">
       <DependentUpon>202101220259312_AddDateDeliveryToOrderTable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202101220740493_AddShippingCostToOrderTable.cs" />
+    <Compile Include="Migrations\202101220740493_AddShippingCostToOrderTable.designer.cs">
+      <DependentUpon>202101220740493_AddShippingCostToOrderTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\ConfigurationPaypal.cs" />
     <Compile Include="Models\ControllerModels\AccountModels.cs" />
     <Compile Include="Models\ControllerModels\InfoModels.cs" />
     <Compile Include="Models\ControllerModels\ProductModel.cs" />
+    <Compile Include="Models\Logger.cs" />
     <Compile Include="Models\ViewModels\AllRoles.cs" />
     <Compile Include="Models\ViewModels\ChangePasswordViewModels.cs" />
     <Compile Include="Models\ViewModels\ForgotPasswordViewModels.cs" />
@@ -655,6 +665,8 @@
     <Content Include="Views\Customer\Info.cshtml" />
     <Content Include="Views\Cart\Index.cshtml" />
     <Content Include="Views\Customer\Index.cshtml" />
+    <Content Include="Views\Paypal\FailureView.cshtml" />
+    <Content Include="Views\Paypal\SuccessView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -687,6 +699,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202101220259312_AddDateDeliveryToOrderTable.resx">
       <DependentUpon>202101220259312_AddDateDeliveryToOrderTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202101220740493_AddShippingCostToOrderTable.resx">
+      <DependentUpon>202101220740493_AddShippingCostToOrderTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

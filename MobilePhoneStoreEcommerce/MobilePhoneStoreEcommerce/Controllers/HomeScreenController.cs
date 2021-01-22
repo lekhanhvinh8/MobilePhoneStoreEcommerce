@@ -18,7 +18,7 @@ namespace MobilePhoneStoreEcommerce.Controllers
             _context = new ApplicationDbContext();
         }
         // GET: HomeScreen
-        public ActionResult Index(int page = 1, int pagesize = 10)
+        public ActionResult Index(int page = 1, int pagesize = 8)
         {
             var allProducts = new ProductModel().allAvailableProducts(page, pagesize);
             return View(allProducts);
@@ -30,7 +30,7 @@ namespace MobilePhoneStoreEcommerce.Controllers
             ViewBag.ProId = id;
             return View(product);
         }
-        public ActionResult Store(int page = 1, int pagesize = 10)
+        public ActionResult Store(int page = 1, int pagesize = 8)
         {
             ViewBag.Action = "Store";
             var viewModel = new StoreViewModels()
@@ -41,7 +41,7 @@ namespace MobilePhoneStoreEcommerce.Controllers
             return View(viewModel);
         }
 
-        public ActionResult Producer(int id, int page = 1, int pagesize = 10)
+        public ActionResult Producer(int id, int page = 1, int pagesize = 8)
         {
             //var productOfProducer = new ProductModel().allAvailableProductsOfProducer(id, page, pagesize);
             //return View(productOfProducer);
@@ -55,7 +55,7 @@ namespace MobilePhoneStoreEcommerce.Controllers
             return View("Store", viewModel);
         }
 
-        public ActionResult ProductsOfSearch(string search = "", int page = 1, int pagesize = 10)
+        public ActionResult ProductsOfSearch(string search = "", int page = 1, int pagesize = 8)
         {
             ViewBag.Action = "Search";
             ViewBag.Search = search;
@@ -67,7 +67,7 @@ namespace MobilePhoneStoreEcommerce.Controllers
             return View("Store", viewModel);
         }
 
-        public ActionResult Category(int id, int page = 1, int pagesize = 10)
+        public ActionResult Category(int id, int page = 1, int pagesize = 8)
         {
             ViewBag.Action = "Cat";
             ViewBag.CatName = new ProductModel().getCatNameById(id);

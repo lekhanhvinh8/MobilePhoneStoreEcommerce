@@ -21,7 +21,6 @@
 <!----->
 <script>
 	$(document).ready(function () {
-		$(".menu_body").hide();
 		//toggle the componenet with class menu_body
 		$(".menu_head").click(function () {
 			$(this).next(".menu_body").slideToggle(600);
@@ -68,8 +67,8 @@
 						<ul>
 							<li>Price:</li>
 							<li><h5>@Model.Price &nbsp;VNĐ</h5></li>
-							<br />
 						</ul>
+						<br />
 					</div>
 					<div class="right-value-details">
 						<a href="#">Instock</a>
@@ -86,11 +85,11 @@
 			<div class="clear"> </div>
 			<div class="menu_container">
 				<p class="menu_head">Infomation of product<span class="plusminus">+</span></p>
-				<div class="menu_body" style="display: none;">
+				<div class="menu_body">
 					<p>@Model.Description</p>
 				</div>
 				<p class="menu_head">Specification<span class="plusminus">+</span></p>
-				<div class="menu_body" style="display: none;">
+				<div class="menu_body">
 					<div class="menu_body2">
 						<table class="table table-bordered">
 							<thead>

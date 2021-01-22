@@ -40,10 +40,13 @@
     <div class="container">
         <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item">
-                <a class="nav-link" id="product-management-tab" data-toggle="tab" href="#product-management-area" role="tab" >Product Management</a>
+                <a class="nav-link" id="product-management-tab" data-toggle="tab" href="#product-management-area" role="tab">Product Management</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" id="order-management-tab" data-toggle="tab" href="#order-management-area" role="tab">Order Management</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="shipping-management-tab" data-toggle="tab" href="#shipping-management-area" role="tab">Shipping Management</a>
             </li>
         </ul>
         <div class="tab-content" id="myTabContent">
@@ -69,6 +72,18 @@
                 <br />
                 <div>
                     <table id="table-orders" class="table table-bordered">
+                        <thead>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="tab-pane" id="shipping-management-area" role="tabpanel">
+                <br />
+                <div>
+                    <table id="table-shipping-orders" class="table table-bordered">
                         <thead>
                         </thead>
                         <tbody>
@@ -220,6 +235,70 @@
                         },
                     },
                     {
+                        title: "Delivery Address",
+                        data: "deliveryAddress",
+                        render: function (data) {
+                            return "<span>" + data + "</span>";
+                        },
+                    },
+                    {
+                        title: "Confirm",
+                        data: "orderID",
+                        render: function (data) {
+                            return "<button class='btn btn-success jsConfirm' data-orderID=" +  data + ">Confirm</button>";
+                        }
+                    },
+                    {
+                        title: "Cancel",
+                        data: "orderID",
+                        render: function (data) {
+                            return "<button class='btn btn-danger jsCancel' data-orderID=" + data + ">Cancel</button>";
+                        }
+                    }
+                ],
+                searching: false,
+                info: false,
+                ordering: false,
+
+            });
+
+            var tableShippingOrders = $("#table-shipping-orders").DataTable({
+                ajax: {
+                    url: "/api/Orders/GetAllShippingOrder?sellerID=" + @Model.SellerID,
+                    dataSrc: "",
+                },
+                "sScrollY": "355",
+                "bScrollCollapse": true,
+                columns: [
+                    {
+                        title: "Order's ID",
+                        data: "orderID",
+                        render: function (data) {
+                            return data;
+                        },
+                    },
+                    {
+                        title: "Customer's ID",
+                        data: "customerID",
+                        render: function (data) {
+                            return data;
+                        }
+                    },
+                    {
+                        title: "Order's Time",
+                        data: "orderTime",
+                        render: function (data) {
+                            return data;
+                        },
+                    },
+                    {
+                        title: "Total Cost",
+                        data: "totalOrderCost",
+                        render: function (data) {
+                            return "<span>" + data + " VND</span>";
+                        },
+                    },
+                    {
                         title: "Confirm",
                         data: "orderID",
                         render: function (data) {
@@ -245,6 +324,9 @@
             })
             $("#myTab a[href='#product-management-area']").on('click', function (e) {
                 tableProducts.ajax.reload();
+            })
+            $("#myTab a[href='#shipping-management-area']").on('click', function (e) {
+                tableShippingOrders.ajax.reload();
             })
 
 

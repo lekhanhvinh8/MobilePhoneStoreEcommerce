@@ -6,7 +6,7 @@
 }
 
 <div class="wrap">
-	<div class="content" style="width: 950px; float: left;">
+	<div class="content" style="width: 935px; float: left; position: relative">
 		<div class="content-grids">
 			@if (ViewBag.Action == "Store" || ViewBag.Action == "Producer")
 			{
@@ -34,9 +34,8 @@
 					</ul>
 				</div>
 			}
-
 		</div>
-		<div style="left: 66rem; top: 35rem; position: absolute">
+		<div style="left: 23rem; top: 0rem; position: absolute">
 			@Html.PagedListPager(Model.allAvailableProducts, Page => Url.Action("Store", new { Page }))
 		</div>
 	</div>
@@ -62,3 +61,4 @@
 	</div>
 </div>
 <div class="clear"></div>
+
