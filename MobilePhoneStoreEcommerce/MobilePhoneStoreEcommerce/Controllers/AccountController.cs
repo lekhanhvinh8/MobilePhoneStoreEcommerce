@@ -213,7 +213,7 @@ namespace MobilePhoneStoreEcommerce.Controllers
         {
             var changePasswordViewModel = new ChangePasswordViewModels()
             {
-                sellerId = ID
+                ID = ID
             };
             return View(changePasswordViewModel);
         }
@@ -224,14 +224,22 @@ namespace MobilePhoneStoreEcommerce.Controllers
         {
             if(ModelState.IsValid)
             {
-                var acc = _context.Accounts.SingleOrDefault(s => s.ID == changePasswordViewModels.sellerId);
+                if (changePasswordViewModels.NewPassword == changePasswordViewModels.OldPassword)
+                {
+                    ModelState.AddModelError("NewPassword", "The new password must be different from old password");
+                    return View(changePasswordViewModels);
+                }
+                var acc = _context.Accounts.SingleOrDefault(s => s.ID == changePasswordViewModels.ID);
                 if (acc != null)
                 {
                     string pwd = AccountModels.Encrypt(changePasswordViewModels.OldPassword, true);
                     if (pwd == acc.PasswordHash)
                     {
                         acc.PasswordHash = AccountModels.Encrypt(changePasswordViewModels.NewPassword, true);
-                        if (new AccountModels().UpdatePassword(acc)) { }
+                        if (new AccountModels().UpdatePassword(acc)) 
+                        {
+                            ViewBag.ChangPass = true;
+                        }
                     }
                     else
                     {
