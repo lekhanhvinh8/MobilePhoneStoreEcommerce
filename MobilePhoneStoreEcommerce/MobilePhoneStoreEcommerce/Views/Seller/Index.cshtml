@@ -230,8 +230,8 @@
                     {
                         title: "Total Cost",
                         data: "totalOrderCost",
-                        render: function (data) {
-                            return "<span>" + data + " VND</span>";
+                        render: function (data, type, orderDto) {
+                            return "<span>" + standardizedMoneyFormatVND(data + orderDto.shippingCost) + " VND</span>";
                         },
                     },
                     {
@@ -242,10 +242,17 @@
                         },
                     },
                     {
+                        title: "See details",
+                        data: "orderID",
+                        render: function (data) {
+                            return "<button class='btn-link' data-orderID=" + data + ">Details</button>";
+                        },
+                    },
+                    {
                         title: "Confirm",
                         data: "orderID",
                         render: function (data) {
-                            return "<button class='btn btn-success jsConfirm' data-orderID=" +  data + ">Confirm</button>";
+                            return "<button class='btn btn-success jsConfirm' data-orderID=" + data + ">Confirm</button>";
                         }
                     },
                     {
@@ -294,24 +301,58 @@
                     {
                         title: "Total Cost",
                         data: "totalOrderCost",
-                        render: function (data) {
-                            return "<span>" + data + " VND</span>";
+                        render: function (data, type, orderDto) {
+                            return "<span>" + standardizedMoneyFormatVND(data + orderDto.shippingCost) + " VND</span>";
                         },
                     },
                     {
-                        title: "Confirm",
+                        title: "Delivery Address",
+                        data: "deliveryAddress",
+                        render: function (data) {
+                            return "<span>" + data + "</span>";
+                        },
+                    },
+                    {
+                        title: "See details",
                         data: "orderID",
                         render: function (data) {
-                            return "<button class='btn btn-success jsConfirm' data-orderID=" +  data + ">Confirm</button>";
+                            return "<button class='btn-link' data-orderID=" + data + ">Details</button>";
+                        },
+                    },
+                    {
+                        title: "Status",
+                        data: "status",
+                        render: function (data) {
+                            if (data == @OrderStates.Success)
+                                return "<span>Success</span>";
+
+                            if(data == @OrderStates.Paid)
+                                return "<span>Paid</span>";
+                            
+                            return "<span>Unpaid</span>";
+                        },
+                    },
+                    {
+                        title: "Delivery",
+                        data: "orderID",
+                        render: function (data, type, orderDto) {
+                            if (orderDto.status == @OrderStates.Paid)
+                                return "<button class='btn btn-success jsDelivery' data-orderID=" + data + ">Delivery</button>";
+
+                            return "<button disabled class='btn btn-success' data-orderID=" + data + ">Delivery</button>";
                         }
                     },
                     {
                         title: "Cancel",
                         data: "orderID",
-                        render: function (data) {
-                            return "<button class='btn btn-danger jsCancel' data-orderID=" + data + ">Cancel</button>";
+                        render: function (data, type, orderDto) {
+                            if (canCancel(orderDto))
+                                return "<button class='btn btn-danger jsCancel' data-orderID=" + data + ">Cancel</button>";
+
+                            return "<button disabled class='btn btn-danger' data-orderID=" + data + ">Cancel</button>";
                         }
                     }
+
                 ],
                 searching: false,
                 info: false,
@@ -399,6 +440,78 @@
                 })
 
             });
+
+            $("#table-shipping-orders").on("click", ".jsCancel", function () {
+                var buttonConfirm = $(this);
+
+                $.ajax({
+                    url: "/api/Orders/Get?orderID=" + buttonConfirm.attr("data-orderid"),
+                    method: "Get",
+                    success: function (response) {
+                        if (response.status != @OrderStates.Pending) {
+                            bootbox.alert("This order has been canceled");
+                            tableOrders.row(buttonConfirm.parents("tr")).remove().draw();
+                        }
+                        else {
+                            $.ajax({
+                                url: "/api/Orders/CancelOrder?orderID=" + buttonConfirm.attr("data-orderid"),
+                                method: "Get",
+                                success: function () {
+                                    tableOrders.row(buttonConfirm.parents("tr")).remove().draw();
+                                },
+                            });
+                        }
+                    }
+                })
+
+            });
+            
+            $("#table-shipping-orders").on("click", ".jsDelivery", function () {
+                var buttonDelivery = $(this);
+
+                $.ajax({
+                    url: "/api/Orders/Delivery?orderID=" + buttonDelivery.attr("data-orderid"),
+                    method: "Get",
+                    success: function () {
+                        var newData = tableShippingOrders.row(buttonDelivery.parents("tr")).data();
+
+                        newData.status = @OrderStates.Success;
+
+                        tableShippingOrders.row(buttonDelivery.parents("tr")).data(newData).draw();
+                    }
+                })
+
+            });
+
+            function standardizedMoneyFormatVND(money) {
+                if ((typeof money) != "string")
+                    money = money.toString();
+
+                var standardMoney = "";
+                var countTo3 = 1;
+
+                for (var i = money.length - 1; i >= 0; i--) {
+                    if (countTo3 < 4) {
+                        standardMoney += money[i];
+                    } else {
+                        countTo3 = 1;
+                        standardMoney += ".";
+                        standardMoney += money[i];
+                    }
+                    countTo3 += 1;
+                }
+                return standardMoney.split("").reverse().join("");
+            }
+
+            function canCancel(orderDto) {
+                var deliveryDate = new Date(orderDto.deliveryDate);
+                var now = new Date();
+
+                if (orderDto.status == @OrderStates.Paid || now <= deliveryDate || orderDto.status == @OrderStates.Success)
+                    return false;
+
+                return true;
+            }
         });
 
     </script>

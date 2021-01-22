@@ -38,62 +38,71 @@
 
         });
 
-        var table = $("#table-orders").DataTable({
-            ajax: {
-                url: "/api/Orders/GetList?customerID=" + customerID,
-                dataSrc: "",
-            },
-            columns: [
-                {
-                    title: "Order ID",
-                    data: "orderID",
-                    width: "10%",
-                    render: function (data) {
-                        return data;
+            var table = $("#table-orders").DataTable({
+                ajax: {
+                    url: "/api/Orders/GetList?customerID=" + customerID,
+                    dataSrc: "",
+                },
+                columns: [
+                    {
+                        title: "Order ID",
+                        data: "orderID",
+                        width: "10%",
+                        render: function (data) {
+                            return data;
+                        },
                     },
-                },
-                {
-                    title: "Order's Time",
-                    data: "orderTime",
-                    render: function (data) {
-                        return data;
-                    }
-                },
-                {
-                    title: "Status",
-                    data: "status",
-                    render: function (data) {
-                        if (data == @OrderStates.Pending)
-                            return "<span>Pending</span>";
-                        else if (data == @OrderStates.Confirmed)
-                            return "<span>waiting for delivery</span>";
-                        else if (data == @OrderStates.Paid)
-                            return "<span>Paid, waiting for delivery</span>";
-                        else {
-                            return "<span>the order was canceled</span>";
+                    {
+                        title: "Order's Time",
+                        data: "orderTime",
+                        render: function (data) {
+                            return data;
                         }
-                    }
-                },
-                {
-                    title: "Total Cost",
-                    data: "totalOrderCost",
-                    render: function (data) {
-                        return "<span>" + data + " VND</span>";
                     },
-                },
-                {
-                    title: "See details",
-                    data: "orderID",
-                    render: function (data) {
-                        return "<button class='btn-link' data-orderID=" + data + ">Details</button>";
+                    {
+                        title: "Status",
+                        data: "status",
+                        render: function (data) {
+                            if (data == @OrderStates.Pending)
+                                return "<span>Pending</span>";
+                            else if (data == @OrderStates.Confirmed)
+                                return "<span>Waiting for delivery</span>";
+                            else if (data == @OrderStates.Paid)
+                                return "<span>Paid, waiting for delivery</span>";
+                            else if (data == @OrderStates.Success)
+                                return "<span>Success</span>";
+                            else {
+                                return "<span>the order was canceled</span>";
+                            }
+                        }
                     },
-                },
-                {
-                    title: "Payment",
-                    data: "orderID",
-                    render: function (data, tupe, order) {
-                        if (order.status == @OrderStates.Confirmed)
-                            return "<button class='btn btn-success jsPayment' data-orderID=" + order.orderID + ">Payment</button>";
+                    {
+                        title: "Shipping Cost",
+                        data: "shippingCost",
+                        render: function (data) {
+                            return "<span>" + data + " VND</span>";
+                        }
+                    },
+                    {
+                        title: "Total Cost",
+                        data: "totalOrderCost",
+                        render: function (data, type, orderDto) {
+                            return "<span>" + standardizedMoneyFormatVND(data + orderDto.shippingCost) + " VND</span>";
+                        },
+                    },
+                    {
+                        title: "See details",
+                        data: "orderID",
+                        render: function (data) {
+                            return "<button class='btn-link' data-orderID=" + data + ">Details</button>";
+                        },
+                    },
+                    {
+                        title: "Payment",
+                        data: "orderID",
+                        render: function (data, tupe, order) {
+                            if (order.status == @OrderStates.Confirmed)
+                                return "<button class='btn btn-success jsPayment' data-orderID=" + order.orderID + ">Payment</button>";
 
                         return "<button disabled class='btn btn-success' data-orderID=" + data + ">Payment</button>";
                     }
@@ -105,18 +114,21 @@
                         if (order.status == @OrderStates.Pending)
                             return "<button class='btn btn-danger jsCancel' data-orderID=" + order.orderID + ">Cancel</button>";
 
-                        return "<button disabled class='btn btn-danger' data-orderID=" + data + ">Cancel</button>";
-                    }
-                },
-                {
-                    title: "Delete",
-                    data: "orderID",
-                    render: function (data, type, order) {
-                        if (order.status == @OrderStates.Canceled || order.status == @OrderStates.Success)
-                            return "<button class='btn btn-danger jsDelete' data-orderID=" + order.orderID + ">Delete</button>";
+                            return "<button disabled class='btn btn-danger' data-orderID=" + data + ">Cancel</button>";
+                        }
+                    },
+                    {
+                        title: "Delete",
+                        data: "orderID",
+                        render: function (data, type, order) {
+                            if (order.status == @OrderStates.Canceled)
+                                return "<button class='btn btn-danger jsDelete' data-orderID=" + order.orderID + ">Delete</button>";
 
-                        if (order.status == @OrderStates.Confirmed)
-                            return "<span>Confirmed</span>";
+                            if (order.status == @OrderStates.Success)
+                                return "<span>Success</span>";
+
+                            if (order.status == @OrderStates.Confirmed)
+                                return "<span>Confirmed</span>";
 
                         if (order.status == @OrderStates.Pending)
                             return "<span>Pending</span>";
@@ -157,13 +169,38 @@
         table.on("click", ".jsDelete", function () {
             var buttonDelete = $(this);
 
-            $.ajax({
-                url: "/api/Orders/DeleteOrder?orderID=" + buttonDelete.attr("data-orderID"),
-                method: "get",
-                success: function () {
-                    table.row(buttonDelete.parents("tr")).remove().draw();
-                },
-            });
-        })
-    });
-</script>
+                $.ajax({
+                    url: "/api/Orders/DeleteOrder?orderID=" + buttonDelete.attr("data-orderID"),
+                    method: "get",
+                    success: function () {
+                        table.row(buttonDelete.parents("tr")).remove().draw();
+                    },
+                });
+            })
+
+            function standardizedMoneyFormatVND(money) {
+                if ((typeof money) != "string")
+                    money = money.toString();
+
+                var standardMoney = "";
+                var countTo3 = 1;
+
+                for (var i = money.length - 1; i >= 0; i--) {
+                    if (countTo3 < 4) {
+                        standardMoney += money[i];
+                    } else {
+                        countTo3 = 1;
+                        standardMoney += ".";
+                        standardMoney += money[i];
+                    }
+                    countTo3 += 1;
+                }
+                return standardMoney.split("").reverse().join("");
+            }
+        });
+
+
+
+    </script>
+</body>
+</html>

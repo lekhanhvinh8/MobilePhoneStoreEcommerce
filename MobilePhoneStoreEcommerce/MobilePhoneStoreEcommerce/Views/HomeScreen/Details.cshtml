@@ -1,4 +1,5 @@
 ﻿@model MobilePhoneStoreEcommerce.Core.Domain.Product
+@using MobilePhoneStoreEcommerce.Persistence.Consts
 @{
 	ViewBag.Title = "Details";
 	Layout = "~/Views/Shared/MainLayout.cshtml";
@@ -77,7 +78,7 @@
 					<div class="clear"> </div>
 				</div>
 				<div class="brand-history">
-					<a href="/ShoppingCart/AddtoCart/@Model.ID">Addcart</a>
+					<a class="cart add-to-cart" data-product-id=@Model.ID data-customer-id=@Session[SessionNames.CustomerID]>AddCart</a>
 				</div>
 				<div class="clear"> </div>
 
@@ -120,3 +121,63 @@
 	</div>
 </div>
 <div class="clear"> </div>
+<script src="~/Scripts/jquery-ui.js"></script>
+
+<script>
+	$(document).ready(function () {
+		$(".add-to-cart").on("click", function () {
+			var productID = $(this).attr("data-product-id");
+			var customerID = $(this).attr("data-customer-id");
+
+			$.ajax({
+				url: "/api/Carts/GetAmountOfCart?customerID=" + customerID + "&productID=" + productID,
+				method: "get",
+				success: function (response) {
+					var amount = response;
+					$.ajax({
+						url: "/api/Carts/GetProductForCart?productID=" + productID,
+						method: "get",
+						success: function (response) {
+							var quantity = response.quantity;
+
+							if (quantity == 0 && amount == 0) {
+								alert("The product is out of stock");
+								return;
+							}
+
+							if ((quantity < amount + 1) && (amount > 0)) {
+								//Cart has been added before and amount + 1 > quantity of product
+
+								$.ajax({
+									url: "/api/Carts/UpdateAmount?customerID=" + customerID + "&productID=" + productID + "&amount=" + quantity,
+									method: "get",
+									success: function () {
+										alert("The product is out of stock, your cart has been updated");
+									}
+								});
+
+								return;
+							}
+
+							$.ajax({
+								url: "/api/Carts/Add?customerID=" + customerID + "&productID=" + productID,
+								method: "Get",
+								success: function () {
+									$('html, body').animate({ scrollTop: $(".cart-image").offset().top }, 500, 'swing', function () {
+										$(".cart-image").effect("shake");
+									});
+								}
+							});
+						},
+					});
+				}
+			});
+
+
+
+
+		});
+
+	});
+
+</script>
