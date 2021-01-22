@@ -19,8 +19,8 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	<script src="~/Assets/js/responsiveslides.min.js"></script>
 
 </head>
-<body>
-	<div class="wrap">
+<body style="width: 1443px;">
+	<div class="wrap" >
 		<!----start-Header---->
 		<div class="header">
 			<!--Search-->
@@ -40,7 +40,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 					}
 					else if (Session[SessionNames.SellerID] != null)
 					{
-						<li><a href="@Url.Action("Index", "Seller", new { sellerID = Session[SessionNames.SellerID]})">MyAccount</a></li>
+						<li><a href="@Url.Action("Index", "Seller", new { sellerID = RoleIds.Seller})">Seller</a></li>
 						<li><a href="@Url.Action("Logout", "Account", routeValues: new { sessionName = SessionNames.SellerID })">Logout</a></li>
 					}
 					else if (Session[SessionNames.CustomerID] != null)
@@ -85,7 +85,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 
 	@RenderBody()
 
-	<div class="footer">
+	<div class="footer" style="margin-top: 3rem; margin-right: -2rem;">
 		<div class="wrap">
 			<div class="section group">
 				<div class="col_1_of_4 span_1_of_4">

@@ -24,6 +24,6 @@ namespace MobilePhoneStoreEcommerce.Models.ViewModels
         [Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
 
-        public int sellerId { get; set; }
+        public int ID { get; set; }
     }
 }
