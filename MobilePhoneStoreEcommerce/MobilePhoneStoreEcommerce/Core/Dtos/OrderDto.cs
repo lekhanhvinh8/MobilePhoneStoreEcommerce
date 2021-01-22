@@ -25,10 +25,14 @@ namespace MobilePhoneStoreEcommerce.Core.Dtos
                 this.ProductOfOrderDtos.Add(new ProductsOfOrderDto(product));
             }
 
-            //var totalOrderCost = new MobilePhoneStoreDBMSEntities().SPGetTotalOrderCost(order.OrderID);
+            int totalCost = 0;
 
-            //this.TotalOrderCost = totalOrderCost.ToArray()[0];
+            foreach (var productsOfOrder in order.ProductsOfOrders)
+            {
+                totalCost += productsOfOrder.Product.Price * productsOfOrder.Amount;
+            }
 
+            this.TotalOrderCost = totalCost;
         }
 
         [Required]

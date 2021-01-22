@@ -36,8 +36,8 @@ namespace MobilePhoneStoreDBMS.Models.CustomValidations
 
             var roleID = accountInDb.Role.ID;
 
-            //if (roleID != loginViewModel.RoleID && loginViewModel.RoleID != RoleIds.Unknown)
-            //    return new ValidationResult("You are not logged in with the correct role");
+            if (roleID != loginViewModel.RoleID && loginViewModel.RoleID != RoleIds.Unknown)
+                return new ValidationResult("You are not logged in with the correct role");
 
             return ValidationResult.Success;
         }

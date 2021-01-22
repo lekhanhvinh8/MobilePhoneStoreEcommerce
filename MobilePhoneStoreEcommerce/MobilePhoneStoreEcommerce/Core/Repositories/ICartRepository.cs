@@ -9,5 +9,6 @@ namespace MobilePhoneStoreEcommerce.Core.Repositories
 {
     public interface ICartRepository : IRepository<Cart>
     {
+        float TotalMoneyInCart();
     }
 }

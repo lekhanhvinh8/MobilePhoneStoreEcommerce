@@ -170,7 +170,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="api\AvatarOfProductsController.cs" />
+    <Compile Include="api\CartsController.cs" />
     <Compile Include="api\CategoriesController.cs" />
+    <Compile Include="api\CustomersController.cs" />
     <Compile Include="api\OrdersController.cs" />
     <Compile Include="api\ProducersController.cs" />
     <Compile Include="api\ProductForSellersController.cs" />
@@ -183,6 +185,8 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\CartController.cs" />
+    <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\SellerController.cs" />
     <Compile Include="Controllers\HomeScreenController.cs" />
@@ -203,10 +207,12 @@
     <Compile Include="Core\Domain\SpecificationValue.cs" />
     <Compile Include="Core\Domain\StarRating.cs" />
     <Compile Include="Core\Dtos\AccountDto.cs" />
+    <Compile Include="Core\Dtos\CartDto.cs" />
     <Compile Include="Core\Dtos\CategoryDto.cs" />
     <Compile Include="Core\Dtos\OrderDto.cs" />
     <Compile Include="Core\Dtos\ProducerDto.cs" />
     <Compile Include="Core\Dtos\ProductDto.cs" />
+    <Compile Include="Core\Dtos\ProductForCartDto.cs" />
     <Compile Include="Core\Dtos\ProductForSellerDto.cs" />
     <Compile Include="Core\Dtos\ProductsOfOrderDto.cs" />
     <Compile Include="Core\Dtos\ProductSpecificationDto.cs" />
@@ -227,10 +233,13 @@
     <Compile Include="Core\Repositories\IProductSpecificationRepository.cs" />
     <Compile Include="Core\Repositories\IRepository.cs" />
     <Compile Include="Core\Repositories\IRoleRepository.cs" />
+    <Compile Include="Core\Repositories\ISellerRepository.cs" />
     <Compile Include="Core\Repositories\ISpecificationValueRepository.cs" />
     <Compile Include="Core\Repositories\IStarRatingRepository.cs" />
     <Compile Include="Core\Services\IAccountAuthentication.cs" />
     <Compile Include="Core\Services\IProductManagement.cs" />
+    <Compile Include="Core\ViewModels\CartViewModel.cs" />
+    <Compile Include="Core\ViewModels\CustomerViewModel.cs" />
     <Compile Include="Core\ViewModels\LoginViewModel.cs" />
     <Compile Include="Core\ViewModels\ProductForSellerViewModel.cs" />
     <Compile Include="Global.asax.cs">
@@ -248,6 +257,14 @@
     <Compile Include="Migrations\202101200652480_ModifyOrderTableConstraintUniqueSellerIDCustomerIDOrderTime.designer.cs">
       <DependentUpon>202101200652480_ModifyOrderTableConstraintUniqueSellerIDCustomerIDOrderTime.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202101211022017_AddDeliveryAddressToOrderTable.cs" />
+    <Compile Include="Migrations\202101211022017_AddDeliveryAddressToOrderTable.designer.cs">
+      <DependentUpon>202101211022017_AddDeliveryAddressToOrderTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202101220259312_AddDateDeliveryToOrderTable.cs" />
+    <Compile Include="Migrations\202101220259312_AddDateDeliveryToOrderTable.designer.cs">
+      <DependentUpon>202101220259312_AddDateDeliveryToOrderTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ControllerModels\AccountModels.cs" />
     <Compile Include="Models\ControllerModels\ProductModel.cs" />
@@ -259,6 +276,7 @@
     <Compile Include="Persistence\Consts\OrderStates.cs" />
     <Compile Include="Persistence\Consts\RoleIds.cs" />
     <Compile Include="Persistence\Consts\SessionNames.cs" />
+    <Compile Include="Persistence\CustomValidations\UniqueEmail.cs" />
     <Compile Include="Persistence\CustomValidations\ValidRoleLogin.cs" />
     <Compile Include="Persistence\CustomValidations\ValidUserNameRegister.cs" />
     <Compile Include="Persistence\EntitiyConfigurations\AccountConfiguration.cs" />
@@ -291,6 +309,7 @@
     <Compile Include="Persistence\Repositories\ProductSpecificationRepository.cs" />
     <Compile Include="Persistence\Repositories\Repository.cs" />
     <Compile Include="Persistence\Repositories\RoleRepository.cs" />
+    <Compile Include="Persistence\Repositories\SellerRepository.cs" />
     <Compile Include="Persistence\Repositories\SpecificationValueRepository.cs" />
     <Compile Include="Persistence\Repositories\StarRatingRepository.cs" />
     <Compile Include="Persistence\Services\AccountAuthentication.cs" />
@@ -344,6 +363,7 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Cart.css" />
     <Content Include="Content\DataTables\css\autoFill.bootstrap.css" />
     <Content Include="Content\DataTables\css\autoFill.bootstrap.min.css" />
     <Content Include="Content\DataTables\css\autoFill.bootstrap4.css" />
@@ -594,6 +614,7 @@
     <Content Include="Scripts\DataTables\responsive.jqueryui.min.js" />
     <Content Include="Scripts\DataTables\responsive.semanticui.js" />
     <Content Include="Scripts\DataTables\responsive.semanticui.min.js" />
+    <Content Include="Scripts\flyto.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
     <Content Include="Scripts\jquery-3.4.1.slim.js" />
@@ -629,6 +650,8 @@
     <Content Include="Views\HomeScreen\Store.cshtml" />
     <Content Include="Views\HomeScreen\ListOfCategory.cshtml" />
     <Content Include="Views\Account\ForgotPassword.cshtml" />
+    <Content Include="Views\Cart\Index.cshtml" />
+    <Content Include="Views\Customer\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -655,6 +678,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202101200652480_ModifyOrderTableConstraintUniqueSellerIDCustomerIDOrderTime.resx">
       <DependentUpon>202101200652480_ModifyOrderTableConstraintUniqueSellerIDCustomerIDOrderTime.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202101211022017_AddDeliveryAddressToOrderTable.resx">
+      <DependentUpon>202101211022017_AddDeliveryAddressToOrderTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202101220259312_AddDateDeliveryToOrderTable.resx">
+      <DependentUpon>202101220259312_AddDateDeliveryToOrderTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

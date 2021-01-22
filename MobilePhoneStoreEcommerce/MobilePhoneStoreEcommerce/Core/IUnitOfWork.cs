@@ -18,6 +18,7 @@ namespace MobilePhoneStoreEcommerce.Core
         ICartRepository Carts { get; }
         ICommentRepository Comments { get; }
         ICustomerRepository Customers { get; }
+        ISellerRepository Sellers { get; }
         IInvoiceRepository Invoices { get; }
         IOrderRepository Orders { get; }
         IProductRepository Products { get; }

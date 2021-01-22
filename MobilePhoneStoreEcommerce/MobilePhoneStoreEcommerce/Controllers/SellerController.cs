@@ -23,8 +23,8 @@ namespace MobilePhoneStoreEcommerce.Controllers
         }
         public ActionResult Index(int sellerID)
         {
-            if(!IsAuthorized(sellerID))
-                throw new HttpResponseException(HttpStatusCode.Unauthorized);
+            if (!IsAuthorized(sellerID))
+                return RedirectToAction("Login", "Account", new { roleID = RoleIds.Seller });
 
             var productForSellerViewModel = new ProductForSellerViewModel() { SellerID = sellerID };
 

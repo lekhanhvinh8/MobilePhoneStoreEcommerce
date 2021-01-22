@@ -1,0 +1,18 @@
+﻿.cart-area {
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+
+.products-area {
+    width: 73%;
+    float: left;
+    position: relative;
+    margin-right: 6px;
+}
+
+.total-cost-area {
+    margin-top: 13px;
+    margin-left: 6px;
+    width: 23%;
+    float: left;
+}

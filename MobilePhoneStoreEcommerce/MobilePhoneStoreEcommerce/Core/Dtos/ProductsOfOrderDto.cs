@@ -13,11 +13,16 @@ namespace MobilePhoneStoreEcommerce.Core.Dtos
         {
             this.OrderID = productsOfOrder.OrderID;
             this.ProductID = productsOfOrder.ProductID;
-            this.amount = productsOfOrder.Amount;
+            this.Amount = productsOfOrder.Amount;
+            this.SellerID = productsOfOrder.Product.SellerID;
+            this.SellerName = productsOfOrder.Product.Seller.Name;
         }
         public int OrderID { get; set; }
         public int ProductID { get; set; }
-        public Nullable<int> amount { get; set; }
+        public Nullable<int> Amount { get; set; }
+        public int SellerID { get; set; }
+        public string SellerName { get; set; }
+
 
     }
 }

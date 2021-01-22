@@ -15,7 +15,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	@Scripts.Render("~/bundles/modernizr")
 	<link href="~/Assets/css/style.css" rel="stylesheet" type="text/css" media="all" />
 	<link rel="stylesheet" href="~/Assets/css/responsiveslides.css">
-	<script src="~/Assets/js/jquery.min.js"></script>
+	<script src="~/Scripts/jquery-3.4.1.js"></script>
 	<script src="~/Assets/js/responsiveslides.min.js"></script>
 
 </head>
@@ -49,12 +49,21 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 						<li><a href="@Url.Action("Index", "Customer", new { customerID = Session[SessionNames.CustomerID]})">MyAccount</a></li>
 						<li><a href="@Url.Action("Logout", "Account", routeValues: new { sessionName = SessionNames.CustomerID })">Logout</a></li>
 					}
-					<li>
-						<a href="@Url.Action("ShowToCart", "ShoppingCart")">
-							<img src="@Url.Content("~/Assets/images/cart-icon.png")" style="height:50px; width: 50px; padding-top: 10px" />
-						</a>
-						@*@Html.Action("BagCart", "ShoppingCart")*@
-					</li>
+                <li>
+                    @if (Session[SessionNames.CustomerID] != null)
+                    {
+                        <a href="@Url.Action("Index", "Cart", new { customerID = Session[SessionNames.CustomerID]})">
+                            <img class="cart-image" src="@Url.Content("~/Assets/images/cart-icon.png")" style="height:50px; width: 50px; padding-top: 10px" />
+                        </a>
+                    }
+                    else
+                    {
+                        <a href="@Url.Action("Login", "Account", new { roleID = RoleIds.Customer })">
+                            <img src="@Url.Content("~/Assets/images/cart-icon.png")" style="height:50px; width: 50px; padding-top: 10px" />
+                        </a>
+                    }
+
+                </li>
 				</ul>
 			</div>
 			<div class="clear"> </div>

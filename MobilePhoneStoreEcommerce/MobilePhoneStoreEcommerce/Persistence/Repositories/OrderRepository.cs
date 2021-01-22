@@ -23,5 +23,14 @@ namespace MobilePhoneStoreEcommerce.Persistence.Repositories
 
             return orders;
         }
+        public IEnumerable<Order> GetAllThenOrderByDate(int customerID)
+        {
+            var orders = this.Context.Set<Order>()
+                .Where(o => o.CustomerID == customerID)
+                .OrderByDescending(o => o.OrderTime)
+                .ToList();
+
+            return orders;
+        }
     }
 }

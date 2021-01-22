@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace MobilePhoneStoreEcommerce.Core.Repositories
 {
-    public interface IOrderRepository : IRepository<Order>
+    public interface ISellerRepository : IRepository<Seller>
     {
-        IEnumerable<Order> GetAllThenOrderByDate(int sellerID, int status);
-        IEnumerable<Order> GetAllThenOrderByDate(int customerID);
+
     }
 }

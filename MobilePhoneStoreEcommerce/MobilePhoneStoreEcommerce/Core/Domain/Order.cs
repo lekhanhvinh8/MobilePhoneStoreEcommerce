@@ -21,5 +21,8 @@ namespace MobilePhoneStoreEcommerce.Core.Domain
         public virtual List<ProductsOfOrder> ProductsOfOrders { get; set; }
         public virtual Invoice Invoice { get; set; }
         public virtual Seller Seller { get; set; }
+        public string DeliveryAddress { get; set; }
+        public DateTime DeliveryDate { get; set; }
+
     }
 }
