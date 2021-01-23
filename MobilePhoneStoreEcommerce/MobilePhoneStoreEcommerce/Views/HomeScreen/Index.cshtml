@@ -40,7 +40,7 @@
                             <img src="/api/AvatarOfProducts/Get?ProductId= @items.ID" style="height: 282px; object-fit: cover;" />
                             @items.Name
                         </a>
-                        <h3 class="shopp-price">@items.Price &nbsp;đ</h3>
+                        <h3 class="shopp-price">@items.Price &nbsp;VND</h3>
                         <ul>
                             @if (Session[SessionNames.CustomerID] != null)
                             {
@@ -122,6 +122,4 @@
     });
 
 </script>
-
-
 

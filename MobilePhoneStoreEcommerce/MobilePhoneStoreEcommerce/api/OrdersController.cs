@@ -111,6 +111,7 @@ namespace MobilePhoneStoreEcommerce.api
                 this._unitOfWork.Products.Load(p => p.ID == productsOfOrder.ProductID);
             }
             this._unitOfWork.Sellers.Load(s => s.ID == order.SellerID);
+            this._unitOfWork.Customers.Load(c => c.ID == order.CustomerID);
 
             return new OrderDto(order);
         }

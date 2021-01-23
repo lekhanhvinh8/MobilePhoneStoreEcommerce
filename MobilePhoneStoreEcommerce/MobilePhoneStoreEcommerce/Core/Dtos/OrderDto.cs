@@ -36,6 +36,9 @@ namespace MobilePhoneStoreEcommerce.Core.Dtos
 
             this.TotalOrderCost = totalCost;
             this.ShippingCost = order.ShippingCost;
+            if(this.PhoneNumber == null)
+                this.PhoneNumber = "07658493040";
+            this.SellerName = order.Seller.Name;
         }
 
         [Required]
@@ -51,5 +54,7 @@ namespace MobilePhoneStoreEcommerce.Core.Dtos
         public List<ProductsOfOrderDto> ProductOfOrderDtos { get; set; }
         public int? TotalOrderCost { get; set; }
         public float ShippingCost { get; set; }
+        public string PhoneNumber { get; set; }
+        public string SellerName { get; set; }
     }
 }

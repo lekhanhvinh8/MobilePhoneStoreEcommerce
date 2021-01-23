@@ -1,5 +1,5 @@
 ﻿@{
-    Layout = null;
+    Layout = "~/Views/Shared/MainLayout.cshtml";
 }
 
 <!DOCTYPE html>
@@ -10,8 +10,11 @@
     <title>SucessView</title>
 </head>
 <body>
-    <div> 
-        <h1>Thanh toán thành công</h1>
+    <div style="margin:2rem"> 
+        <h1 class="for_h2">Success Payment</h1>
+        <div style="margin: 1rem;">
+            <a class="btn btn-success" href="@Url.Action("Index", "HomeScreen")">Go to home</a>
+        </div>
     </div>
 </body>
 </html>

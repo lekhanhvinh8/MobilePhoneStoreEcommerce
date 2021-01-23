@@ -131,6 +131,10 @@
                 <label class="control-label" for="shippingCost">Shipping Cost: </label>
                 <input class="form-control" name="shippingCost" style="margin-left:39px;" disabled />
             </div>
+            <div class="form-inline" style="float: right;">
+                <label class="control-label" for="totalCostLabel">Total Cost: </label>
+                <div name="totalCost" style="float: right;"></div>
+            </div>
         </form>
     </div>
 
@@ -647,6 +651,25 @@
                             ordering: false,
                             paging: false,
                         });
+
+                        var customerID = dialogBootbox.find("#form-order-detail input[name='customerID']");
+                        var phoneNumber = dialogBootbox.find("#form-order-detail input[name='phoneNumber']");
+                        var deliveryAddress = dialogBootbox.find("#form-order-detail input[name='deliveryAddress']");
+                        var sellerName = dialogBootbox.find("#form-order-detail input[name='sellerName']");
+                        var deliveryDate = dialogBootbox.find("#form-order-detail input[name='deliveryDate']");
+                        var shippingCost = dialogBootbox.find("#form-order-detail input[name='shippingCost']");
+
+                        $(customerID).val(orderDto.customerID);
+                        $(phoneNumber).val(orderDto.phoneNumber);
+                        $(deliveryAddress).val(orderDto.deliveryAddress);
+                        $(sellerName).val(orderDto.sellerName);
+                        $(deliveryDate).val(orderDto.deliveryDate);
+                        $(shippingCost).val(orderDto.shippingCost);
+
+                        var totalCost = dialogBootbox.find("#form-order-detail div[name='totalCost']");
+                        totalCost.text(" " + standardizedMoneyFormatVND(orderDto.shippingCost + orderDto.totalOrderCost) + " VND");
+
+
                     }
                 });
             }

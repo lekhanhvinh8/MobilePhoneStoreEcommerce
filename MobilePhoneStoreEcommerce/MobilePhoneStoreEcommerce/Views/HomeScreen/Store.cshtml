@@ -28,7 +28,7 @@
 						<img src="/api/AvatarOfProducts/Get?ProductId= @items.ID" style="height: 196px; object-fit: cover;" />
 						@items.Name
 					</a>
-					<h3>@items.Price &nbsp;đ</h3>
+					<h3>@items.Price &nbsp;VND</h3>
 					<ul>
 						<li><a style="cursor: pointer" class="cart add-to-cart" data-product-id=@items.ID data-customer-id=@Session[SessionNames.CustomerID]> </a></li>
 						<li><a class="i" href="@Url.Action("Details", "HomeScreen", new { id = items.ID })"> </a></li>
